@@ -1,7 +1,7 @@
 [
   {
     "scenario": "healthy",
-    "session_id": "c18de3e8186f49cda50365b8813256f7",
+    "session_id": "54f7325d7f74454386ff8b8bfb1c4bd4",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 2,
@@ -11,17 +11,17 @@
   },
   {
     "scenario": "incident",
-    "session_id": "02598f163cca4bd791e1b303e3acf0c4",
+    "session_id": "b9a8fd182cd441508564a1018a214fe9",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 4,
     "tool_attempts": 3,
     "incident_count": 1,
-    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-6A4473A871."
+    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-5B310B9630."
   },
   {
     "scenario": "retry",
-    "session_id": "805568f1610640b4a1197645347dd7fd",
+    "session_id": "e933626bcc9c440ab8566500b42d5e59",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 2,
@@ -31,7 +31,7 @@
   },
   {
     "scenario": "persistent_failure",
-    "session_id": "79f2fe4a91454f23943f347123447d31",
+    "session_id": "8702955246424d88b3e7a017e93c7056",
     "status": "FAILED",
     "stop_reason": "completion_evidence_missing",
     "steps": 2,
@@ -41,7 +41,7 @@
   },
   {
     "scenario": "loop",
-    "session_id": "242dad1c5a78459f923fe63a36194bae",
+    "session_id": "29b1d812bd1e4c75a6bf7e2ae725a405",
     "status": "LIMIT_EXCEEDED",
     "stop_reason": "step_limit",
     "steps": 8,
@@ -51,7 +51,7 @@
   },
   {
     "scenario": "rejected",
-    "session_id": "5b9f8ae5512040a5956f76233d5f55e7",
+    "session_id": "3c6208203e9746adb9b6615dff32f65d",
     "status": "COMPLETED",
     "stop_reason": "user_rejected",
     "steps": 4,

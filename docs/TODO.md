@@ -66,7 +66,8 @@
 
 - [x] 确定目标仓库：https://github.com/wizounovziki/agent-harness-assessment
 - [x] 按用户最新要求，将小型 Mock Dataset 随代码放入同一仓库的 data/。
-- [ ] 发布完整项目到 main，并核对远端提交。
-- [ ] 验证仓库与数据集可在未登录状态访问，写入提交清单。
+- [x] 发布完整项目到 main，并核对远端文件树与本地验证版本一致。
+- [x] 匿名读取七个交付文件和完整源码 ZIP，验证代码与数据公开可访问。
+- [x] 从公开 Git 仓库重新安装，57 个测试全部通过；验证信息写入提交清单。
 
 真实模型验证已记为本次暂缓项。公开交付位置为上述 GitHub 仓库及 data/ 目录。最新证据见 [验证结果](./validation-results.json) 和 [提交清单](./submission-checklist.md)。

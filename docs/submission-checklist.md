@@ -21,7 +21,12 @@ Live model smoke verification is deferred for this delivery at the user's reques
 
 - [x] Submission repository selected: https://github.com/wizounovziki/agent-harness-assessment
 - [x] Dataset submission method selected: include the small dataset under `data/` in the same repository.
-- [ ] Publish the complete project to `main`.
-- [ ] Verify repository and dataset access without authentication.
+- [x] Publish the complete project to `main`.
+- [x] Verify repository and dataset access without authentication: seven raw files and the complete source ZIP downloaded successfully.
+- [x] Install from the public Git checkout and run all 57 tests successfully.
 
 Publication state and public URLs are recorded in `publication.json` and `validation-results.json`.
+
+Repository: https://github.com/wizounovziki/agent-harness-assessment
+
+Dataset: https://github.com/wizounovziki/agent-harness-assessment/tree/main/data

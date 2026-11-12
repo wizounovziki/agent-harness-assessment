@@ -2,6 +2,48 @@
   "repository_url": "https://github.com/wizounovziki/agent-harness-assessment",
   "dataset_url": "https://github.com/wizounovziki/agent-harness-assessment/tree/main/data",
   "dataset_delivery": "git_repository",
-  "status": "prepared",
-  "public_access_verified": false
+  "status": "published",
+  "public_access_verified": true,
+  "verified_code_commit": "1f120efc8c9933b651b06cf11120d0755a3ff8e1",
+  "verified_at": "2026-11-12T14:51:53.184012+00:00",
+  "anonymous_checks": {
+    "raw_files": [
+      {
+        "path": "README.md",
+        "status": 200
+      },
+      {
+        "path": "data/mock_services.json",
+        "status": 200
+      },
+      {
+        "path": "data/mock_kb_docs.json",
+        "status": 200
+      },
+      {
+        "path": "data/scenarios.json",
+        "status": 200
+      },
+      {
+        "path": "data/manifest.json",
+        "status": 200
+      },
+      {
+        "path": "postman_collection.json",
+        "status": 200
+      },
+      {
+        "path": "docs/implementation-report.md",
+        "status": 200
+      }
+    ],
+    "source_zip_download": true
+  },
+  "public_checkout_tests": {
+    "tests": 57,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "dataset_bytes": 23203
 }

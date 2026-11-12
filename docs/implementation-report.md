@@ -75,6 +75,8 @@ Postman files include healthy, approved, rejected, retry, malformed response, pe
 
 Current public links and live-model verification are recorded in [submission-checklist.md](./submission-checklist.md).
 
+The complete project is published at [wizounovziki/agent-harness-assessment](https://github.com/wizounovziki/agent-harness-assessment). The approximately 23 KB mock dataset is delivered in its [data directory](https://github.com/wizounovziki/agent-harness-assessment/tree/main/data). Anonymous file and source ZIP downloads succeeded, and all 57 tests passed after installation from the public Git checkout.
+
 ## Limitations and next steps
 
 The environment uses mock services and a single application process. API identity defaults to one demo user. Scripted mode reproduces fixtures rather than interpreting arbitrary objectives. Real mode supports one validated JSON decision per model request.
