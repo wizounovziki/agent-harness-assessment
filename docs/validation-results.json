@@ -1,0 +1,186 @@
+{
+  "source_fingerprint": "bec95a7edf87b5a75e8c469fe574b7b749e7898ff492fbf246d23e09e83634b7",
+  "source_sha256": {
+    "data/mock_kb_docs.json": "cf08947ef928adfb9a07efcf3d118e152d8ea57d81361d1e35555a4bd924d440",
+    "data/mock_services.json": "1717afab3b99d6becb756619f2b946addda90eb7d58cf1ab9baaabb537acb16f",
+    "data/scenarios.json": "4f4ba5bfd66cd51b8d043926d846e7e606950f40bdb87bf61f66d8ef6b30d927",
+    "data/schemas/knowledge_result.schema.json": "03971f9b93ca225b2db251d1f4a750ca75b7b25332c1f27caa37c0b678d9852d",
+    "data/schemas/model_action.schema.json": "0914f909886c519826df52ec625b2abf46d2d29664812e533dfbf8ee2a36d8a2",
+    "data/schemas/scenario.schema.json": "b6005e4f5aba8c27f420b92b7605280d10900567749731ec3f7fec36b893f758",
+    "data/schemas/service_status.schema.json": "bc29181ed053aceb0f4d69b746039ddbc2c9d3805c9388f9331fd8d012e1510e",
+    "main.py": "62f9cab06178212830181c991849aa1bb2a323d4969de83c6102bd6e918b81a5",
+    "pyproject.toml": "5be5e13a708d134a33c64d550d6606130a6b830032eba9051aa9805b05229db7",
+    "scripts/__init__.py": "0d9be0ae42a8c85f3959d9341b09746e78ac81302f13a57e8c01fdea28bd6df3",
+    "scripts/build_mock_dataset.py": "6de79f175ba510dd2443dc4224e19d18987c73c8fdf70c5d629012ee3428c42a",
+    "scripts/build_postman.py": "23e3d89c3490d6260262e40cfacded5c8be8550a45c0c259fbc86bae95146656",
+    "scripts/live_model_smoke.py": "6a8c4eec398fb23b3c29df4fd22f08479a8935d8d0ffc009d4982f7d08c8653a",
+    "scripts/prepare_submission.py": "d753ec2e346c6e8220242c32f97c00f3ebfc2e492e6ed29ce340ecfca37756f6",
+    "scripts/verify_archives.py": "db4d003e3e3b812248b6d67132d9878f99edcb3625e65cb58791d9ba85561116",
+    "src/__init__.py": "60e253ead7625d48e4e67f59673627dd41290b57e6248a907d9c465605883502",
+    "src/api.py": "09911c249cbd832b4af73b1bf7bd1a89d7c47bba00d70c0b1a5675890625ead2",
+    "src/config.py": "4c84c04b92f2ae5648cc030e0e5799df806e9499e13e07e014e7cdc7619eddb8",
+    "src/errors.py": "52a3328409365eb5c525be54cb513bcc97cac1489c1e60d2ccbb0c334af1b51c",
+    "src/harness.py": "e3e1fb45550ab71af27077bfed857259d900fd2090ddf3e5542847a2e0d1b9c1",
+    "src/llm_client.py": "ad90336ebad11dd83ed28687942f71b94b825f1c2acdc160b8e488b5577f4bac",
+    "src/schemas.py": "1e858f84cafc9f7121014e451c00cfa56dc883291a81bb8f7fd9dd5e45c4f4da",
+    "src/service.py": "343b261973778b04bc5b963cabc5c7287a99dde5701c20b579c0c22a66e62160",
+    "src/storage.py": "68f16b3800bcc6d87aa063feda937de3fa0d5e328322f5f78e311c846e765cd4",
+    "src/tools.py": "51a0e4967f5324dd257268e9516433956b8ef39552459b437f2c3bbcd55e1c5a",
+    "src/tracer.py": "87c2e5b526716a478c080f4b805d9993a640d90e32564b3878d8d3b7b1786333",
+    "tests/conftest.py": "50d65e6f672eaca1c004d8cab42f4be98ff70a22e21b897f2a8828c613cf82b2",
+    "tests/test_api.py": "b06a382c25f7962ecfedd50fc201a131a35972be8f8cc69b14fb94539c5fcb07",
+    "tests/test_delivery.py": "f9edd917fd8992928556ad8302bd4239782b5e8f7bfb1ec465b1da0ded606b96",
+    "tests/test_happy_path.py": "15c3078ee7d4141972e9ee3fa5cb36885ff72fa1ad98e99cea15b3f0822b2c09",
+    "tests/test_llm_client.py": "47e5a8a8ffff25e500be2fea4a4f6ca928bc52bb6212d7bf2502927ffa96477b",
+    "tests/test_resilience.py": "bff9c76d6e8d56b5a10119383aa4b0d8b5b70c8364dc31b9f343d4e39803b452",
+    "tests/test_safety.py": "f057c5e3a9e0673245c58fc1599b9f41e62def76db8ec0a1a42614584b2aad70",
+    "uv.lock": "c39b05a772c20d5edd86d46c01b27eb97b71a5c34e652447b5466e15e51e0792"
+  },
+  "python": "3.12.13",
+  "platform": "Windows",
+  "dependencies": {
+    "fastapi": "0.162.5",
+    "pydantic": "2.14.3",
+    "openai": "2.54.0",
+    "pytest": "9.2.0",
+    "uvicorn": "0.54.0"
+  },
+  "automated_tests": {
+    "executed": true,
+    "tests": 57,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "postman": {
+    "executed": true,
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 27,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 27,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequests": {
+        "total": 27,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 27,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 27,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 46,
+        "pending": 0,
+        "failed": 0
+      },
+      "testScripts": {
+        "total": 27,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequestScripts": {
+        "total": 0,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "failures": 0
+  },
+  "clean_install": {
+    "executed": true,
+    "installation": "uv sync --frozen --python 3.12 from extracted source archive",
+    "source_fingerprint": "bec95a7edf87b5a75e8c469fe574b7b749e7898ff492fbf246d23e09e83634b7",
+    "tests": 57,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "examples": [
+    {
+      "scenario": "healthy",
+      "session_id": "c18de3e8186f49cda50365b8813256f7",
+      "status": "COMPLETED",
+      "stop_reason": "goal_completed",
+      "steps": 2,
+      "tool_attempts": 1,
+      "incident_count": 0,
+      "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+    },
+    {
+      "scenario": "incident",
+      "session_id": "02598f163cca4bd791e1b303e3acf0c4",
+      "status": "COMPLETED",
+      "stop_reason": "goal_completed",
+      "steps": 4,
+      "tool_attempts": 3,
+      "incident_count": 1,
+      "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-6A4473A871."
+    },
+    {
+      "scenario": "retry",
+      "session_id": "805568f1610640b4a1197645347dd7fd",
+      "status": "COMPLETED",
+      "stop_reason": "goal_completed",
+      "steps": 2,
+      "tool_attempts": 2,
+      "incident_count": 0,
+      "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+    },
+    {
+      "scenario": "persistent_failure",
+      "session_id": "79f2fe4a91454f23943f347123447d31",
+      "status": "FAILED",
+      "stop_reason": "completion_evidence_missing",
+      "steps": 2,
+      "tool_attempts": 3,
+      "incident_count": 0,
+      "final_answer": "The task could not be completed with verified tool evidence. Current service status could not be verified."
+    },
+    {
+      "scenario": "loop",
+      "session_id": "242dad1c5a78459f923fe63a36194bae",
+      "status": "LIMIT_EXCEEDED",
+      "stop_reason": "step_limit",
+      "steps": 8,
+      "tool_attempts": 8,
+      "incident_count": 0,
+      "final_answer": "Execution stopped: step_limit."
+    },
+    {
+      "scenario": "rejected",
+      "session_id": "5b9f8ae5512040a5956f76233d5f55e7",
+      "status": "COMPLETED",
+      "stop_reason": "user_rejected",
+      "steps": 4,
+      "tool_attempts": 2,
+      "incident_count": 0,
+      "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident creation was cancelled by the user. No incident was created."
+    }
+  ],
+  "live_model": {
+    "executed": false,
+    "status": "deferred_by_user",
+    "reason": "Live model verification is deferred for this delivery at the user's request."
+  },
+  "public_repository": "https://github.com/wizounovziki/agent-harness-assessment",
+  "public_dataset_url": "https://github.com/wizounovziki/agent-harness-assessment/tree/main/data",
+  "publication_status": "prepared",
+  "public_access_verified": false
+}

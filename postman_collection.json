@@ -1,0 +1,838 @@
+{
+  "info": {
+    "name": "Operations Agent Harness",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Scripted-mode acceptance collection. Run with 100 ms request delay; default server budgets apply. Approval is tied to the fetched action hash."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{api_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "api_token",
+      "value": "local-demo-token"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Health and contracts",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Healthy API\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List deterministic scenarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/scenarios"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Scenario catalog\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 Healthy service",
+      "item": [
+        {
+          "name": "Create healthy run",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/runs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objective\": \"Check service health and handle incidents.\",\n  \"scenario_id\": \"healthy\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Run accepted\", () => pm.response.to.have.status(202));",
+                  "pm.collectionVariables.set(\"run_id\", pm.response.json().session_id);",
+                  "pm.collectionVariables.set(\"poll_count\", \"0\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll healthy completion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status query succeeds\", () => pm.response.to.have.status(200));",
+                  "const state = pm.response.json();",
+                  "const expected = \"COMPLETED\";",
+                  "if (state.status === \"RUNNING\" && state.status !== expected) {",
+                  "  const count = Number(pm.collectionVariables.get(\"poll_count\") || \"0\") + 1;",
+                  "  pm.collectionVariables.set(\"poll_count\", String(count));",
+                  "  if (count < 100) { pm.execution.setNextRequest(pm.info.requestName); }",
+                  "  else { pm.test(\"Polling completes within 100 requests\", () => pm.expect.fail(\"Timed out\")); pm.execution.setNextRequest(null); }",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"poll_count\", \"0\");",
+                  "  pm.test(\"Expected run state\", () => pm.expect(state.status).to.eql(expected));",
+                  "  if (state.pending_tool_call) {",
+                  "    pm.collectionVariables.set(\"approval_id\", state.pending_tool_call.approval_id);",
+                  "    pm.collectionVariables.set(\"parameters_hash\", state.pending_tool_call.parameters_hash);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify no incident",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}/incidents"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Incident query succeeds\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Exactly 0 incident records\", () => pm.expect(pm.response.json()).to.have.lengthOf(0));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 Approve an incident",
+      "item": [
+        {
+          "name": "Create outage run",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/runs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objective\": \"Check service health and handle incidents.\",\n  \"scenario_id\": \"incident\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Run accepted\", () => pm.response.to.have.status(202));",
+                  "pm.collectionVariables.set(\"run_id\", pm.response.json().session_id);",
+                  "pm.collectionVariables.set(\"poll_count\", \"0\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll pending approval",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status query succeeds\", () => pm.response.to.have.status(200));",
+                  "const state = pm.response.json();",
+                  "const expected = \"AWAITING_APPROVAL\";",
+                  "if (state.status === \"RUNNING\" && state.status !== expected) {",
+                  "  const count = Number(pm.collectionVariables.get(\"poll_count\") || \"0\") + 1;",
+                  "  pm.collectionVariables.set(\"poll_count\", String(count));",
+                  "  if (count < 100) { pm.execution.setNextRequest(pm.info.requestName); }",
+                  "  else { pm.test(\"Polling completes within 100 requests\", () => pm.expect.fail(\"Timed out\")); pm.execution.setNextRequest(null); }",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"poll_count\", \"0\");",
+                  "  pm.test(\"Expected run state\", () => pm.expect(state.status).to.eql(expected));",
+                  "  if (state.pending_tool_call) {",
+                  "    pm.collectionVariables.set(\"approval_id\", state.pending_tool_call.approval_id);",
+                  "    pm.collectionVariables.set(\"parameters_hash\", state.pending_tool_call.parameters_hash);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify zero writes before approval",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}/incidents"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Incident query succeeds\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Exactly 0 incident records\", () => pm.expect(pm.response.json()).to.have.lengthOf(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Approve exact saved incident",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/runs/{{run_id}}/approvals/{{approval_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"approve\",\n  \"parameters_hash\": \"{{parameters_hash}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Decision accepted\", () => pm.response.to.have.status(202));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll approved completion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status query succeeds\", () => pm.response.to.have.status(200));",
+                  "const state = pm.response.json();",
+                  "const expected = \"COMPLETED\";",
+                  "if (state.status === \"RUNNING\" && state.status !== expected) {",
+                  "  const count = Number(pm.collectionVariables.get(\"poll_count\") || \"0\") + 1;",
+                  "  pm.collectionVariables.set(\"poll_count\", String(count));",
+                  "  if (count < 100) { pm.execution.setNextRequest(pm.info.requestName); }",
+                  "  else { pm.test(\"Polling completes within 100 requests\", () => pm.expect.fail(\"Timed out\")); pm.execution.setNextRequest(null); }",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"poll_count\", \"0\");",
+                  "  pm.test(\"Expected run state\", () => pm.expect(state.status).to.eql(expected));",
+                  "  if (state.pending_tool_call) {",
+                  "    pm.collectionVariables.set(\"approval_id\", state.pending_tool_call.approval_id);",
+                  "    pm.collectionVariables.set(\"parameters_hash\", state.pending_tool_call.parameters_hash);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify one created incident",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}/incidents"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Incident query succeeds\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Exactly 1 incident records\", () => pm.expect(pm.response.json()).to.have.lengthOf(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Export trace",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}/trace.jsonl"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Trace export\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Trace contains approval\", () => pm.expect(pm.response.text()).to.include(\"approval_decided\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 Reject an incident",
+      "item": [
+        {
+          "name": "Create rejected run",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/runs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objective\": \"Check service health and handle incidents.\",\n  \"scenario_id\": \"incident\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Run accepted\", () => pm.response.to.have.status(202));",
+                  "pm.collectionVariables.set(\"run_id\", pm.response.json().session_id);",
+                  "pm.collectionVariables.set(\"poll_count\", \"0\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll rejection approval",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status query succeeds\", () => pm.response.to.have.status(200));",
+                  "const state = pm.response.json();",
+                  "const expected = \"AWAITING_APPROVAL\";",
+                  "if (state.status === \"RUNNING\" && state.status !== expected) {",
+                  "  const count = Number(pm.collectionVariables.get(\"poll_count\") || \"0\") + 1;",
+                  "  pm.collectionVariables.set(\"poll_count\", String(count));",
+                  "  if (count < 100) { pm.execution.setNextRequest(pm.info.requestName); }",
+                  "  else { pm.test(\"Polling completes within 100 requests\", () => pm.expect.fail(\"Timed out\")); pm.execution.setNextRequest(null); }",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"poll_count\", \"0\");",
+                  "  pm.test(\"Expected run state\", () => pm.expect(state.status).to.eql(expected));",
+                  "  if (state.pending_tool_call) {",
+                  "    pm.collectionVariables.set(\"approval_id\", state.pending_tool_call.approval_id);",
+                  "    pm.collectionVariables.set(\"parameters_hash\", state.pending_tool_call.parameters_hash);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reject saved incident",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/runs/{{run_id}}/approvals/{{approval_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"reject\",\n  \"parameters_hash\": \"{{parameters_hash}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Decision accepted\", () => pm.response.to.have.status(202));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll cancellation summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status query succeeds\", () => pm.response.to.have.status(200));",
+                  "const state = pm.response.json();",
+                  "const expected = \"COMPLETED\";",
+                  "if (state.status === \"RUNNING\" && state.status !== expected) {",
+                  "  const count = Number(pm.collectionVariables.get(\"poll_count\") || \"0\") + 1;",
+                  "  pm.collectionVariables.set(\"poll_count\", String(count));",
+                  "  if (count < 100) { pm.execution.setNextRequest(pm.info.requestName); }",
+                  "  else { pm.test(\"Polling completes within 100 requests\", () => pm.expect.fail(\"Timed out\")); pm.execution.setNextRequest(null); }",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"poll_count\", \"0\");",
+                  "  pm.test(\"Expected run state\", () => pm.expect(state.status).to.eql(expected));",
+                  "  if (state.pending_tool_call) {",
+                  "    pm.collectionVariables.set(\"approval_id\", state.pending_tool_call.approval_id);",
+                  "    pm.collectionVariables.set(\"parameters_hash\", state.pending_tool_call.parameters_hash);",
+                  "  }",
+                  "  pm.test(\"Rejection observed\", () => pm.expect(state.stop_reason).to.eql(\"user_rejected\"));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify rejection prevents creation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}/incidents"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Incident query succeeds\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Exactly 0 incident records\", () => pm.expect(pm.response.json()).to.have.lengthOf(0));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 Retry and model correction",
+      "item": [
+        {
+          "name": "Create transient failure run",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/runs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objective\": \"Check service health and handle incidents.\",\n  \"scenario_id\": \"retry\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Run accepted\", () => pm.response.to.have.status(202));",
+                  "pm.collectionVariables.set(\"run_id\", pm.response.json().session_id);",
+                  "pm.collectionVariables.set(\"poll_count\", \"0\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll retry recovery",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status query succeeds\", () => pm.response.to.have.status(200));",
+                  "const state = pm.response.json();",
+                  "const expected = \"COMPLETED\";",
+                  "if (state.status === \"RUNNING\" && state.status !== expected) {",
+                  "  const count = Number(pm.collectionVariables.get(\"poll_count\") || \"0\") + 1;",
+                  "  pm.collectionVariables.set(\"poll_count\", String(count));",
+                  "  if (count < 100) { pm.execution.setNextRequest(pm.info.requestName); }",
+                  "  else { pm.test(\"Polling completes within 100 requests\", () => pm.expect.fail(\"Timed out\")); pm.execution.setNextRequest(null); }",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"poll_count\", \"0\");",
+                  "  pm.test(\"Expected run state\", () => pm.expect(state.status).to.eql(expected));",
+                  "  if (state.pending_tool_call) {",
+                  "    pm.collectionVariables.set(\"approval_id\", state.pending_tool_call.approval_id);",
+                  "    pm.collectionVariables.set(\"parameters_hash\", state.pending_tool_call.parameters_hash);",
+                  "  }",
+                  "  pm.test(\"Retry counted\", () => pm.expect(state.tool_attempts).to.eql(2));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create malformed JSON run",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/runs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objective\": \"Check service health and handle incidents.\",\n  \"scenario_id\": \"malformed_json\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Run accepted\", () => pm.response.to.have.status(202));",
+                  "pm.collectionVariables.set(\"run_id\", pm.response.json().session_id);",
+                  "pm.collectionVariables.set(\"poll_count\", \"0\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll model correction",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status query succeeds\", () => pm.response.to.have.status(200));",
+                  "const state = pm.response.json();",
+                  "const expected = \"COMPLETED\";",
+                  "if (state.status === \"RUNNING\" && state.status !== expected) {",
+                  "  const count = Number(pm.collectionVariables.get(\"poll_count\") || \"0\") + 1;",
+                  "  pm.collectionVariables.set(\"poll_count\", String(count));",
+                  "  if (count < 100) { pm.execution.setNextRequest(pm.info.requestName); }",
+                  "  else { pm.test(\"Polling completes within 100 requests\", () => pm.expect.fail(\"Timed out\")); pm.execution.setNextRequest(null); }",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"poll_count\", \"0\");",
+                  "  pm.test(\"Expected run state\", () => pm.expect(state.status).to.eql(expected));",
+                  "  if (state.pending_tool_call) {",
+                  "    pm.collectionVariables.set(\"approval_id\", state.pending_tool_call.approval_id);",
+                  "    pm.collectionVariables.set(\"parameters_hash\", state.pending_tool_call.parameters_hash);",
+                  "  }",
+                  "  pm.test(\"Correction consumes a step\", () => pm.expect(state.current_step).to.eql(3));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create permanent failure run",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/runs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objective\": \"Check service health and handle incidents.\",\n  \"scenario_id\": \"persistent_failure\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Run accepted\", () => pm.response.to.have.status(202));",
+                  "pm.collectionVariables.set(\"run_id\", pm.response.json().session_id);",
+                  "pm.collectionVariables.set(\"poll_count\", \"0\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll permanent failure",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status query succeeds\", () => pm.response.to.have.status(200));",
+                  "const state = pm.response.json();",
+                  "const expected = \"FAILED\";",
+                  "if (state.status === \"RUNNING\" && state.status !== expected) {",
+                  "  const count = Number(pm.collectionVariables.get(\"poll_count\") || \"0\") + 1;",
+                  "  pm.collectionVariables.set(\"poll_count\", String(count));",
+                  "  if (count < 100) { pm.execution.setNextRequest(pm.info.requestName); }",
+                  "  else { pm.test(\"Polling completes within 100 requests\", () => pm.expect.fail(\"Timed out\")); pm.execution.setNextRequest(null); }",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"poll_count\", \"0\");",
+                  "  pm.test(\"Expected run state\", () => pm.expect(state.status).to.eql(expected));",
+                  "  if (state.pending_tool_call) {",
+                  "    pm.collectionVariables.set(\"approval_id\", state.pending_tool_call.approval_id);",
+                  "    pm.collectionVariables.set(\"parameters_hash\", state.pending_tool_call.parameters_hash);",
+                  "  }",
+                  "  pm.test(\"Three bounded attempts\", () => pm.expect(state.tool_attempts).to.eql(3));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 Execution limit",
+      "item": [
+        {
+          "name": "Create looping run",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/runs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objective\": \"Check service health and handle incidents.\",\n  \"scenario_id\": \"loop\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Run accepted\", () => pm.response.to.have.status(202));",
+                  "pm.collectionVariables.set(\"run_id\", pm.response.json().session_id);",
+                  "pm.collectionVariables.set(\"poll_count\", \"0\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Poll bounded loop",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status query succeeds\", () => pm.response.to.have.status(200));",
+                  "const state = pm.response.json();",
+                  "const expected = \"LIMIT_EXCEEDED\";",
+                  "if (state.status === \"RUNNING\" && state.status !== expected) {",
+                  "  const count = Number(pm.collectionVariables.get(\"poll_count\") || \"0\") + 1;",
+                  "  pm.collectionVariables.set(\"poll_count\", String(count));",
+                  "  if (count < 100) { pm.execution.setNextRequest(pm.info.requestName); }",
+                  "  else { pm.test(\"Polling completes within 100 requests\", () => pm.expect.fail(\"Timed out\")); pm.execution.setNextRequest(null); }",
+                  "} else {",
+                  "  pm.collectionVariables.set(\"poll_count\", \"0\");",
+                  "  pm.test(\"Expected run state\", () => pm.expect(state.status).to.eql(expected));",
+                  "  if (state.pending_tool_call) {",
+                  "    pm.collectionVariables.set(\"approval_id\", state.pending_tool_call.approval_id);",
+                  "    pm.collectionVariables.set(\"parameters_hash\", state.pending_tool_call.parameters_hash);",
+                  "  }",
+                  "  pm.test(\"Step limit\", () => pm.expect(state.stop_reason).to.eql(\"step_limit\"));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Read bounded execution events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/runs/{{run_id}}/events?after=0"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Execution limit event\", () => pm.expect(pm.response.json().some(e => e.event_type === \"execution_limit\")).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

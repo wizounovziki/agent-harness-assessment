@@ -1,0 +1,82 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "objective": {
+      "title": "Objective",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "responses": {
+      "items": {},
+      "minItems": 1,
+      "title": "Responses",
+      "type": "array"
+    },
+    "repeat_last": {
+      "default": false,
+      "title": "Repeat Last",
+      "type": "boolean"
+    },
+    "faults": {
+      "additionalProperties": {
+        "items": {
+          "enum": [
+            "ok",
+            "timeout",
+            "connection_error",
+            "permanent_error",
+            "delay",
+            "invalid_output",
+            "commit_then_timeout"
+          ],
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "propertyNames": {
+        "enum": [
+          "search_knowledge_base",
+          "get_service_status",
+          "create_incident"
+        ]
+      },
+      "title": "Faults",
+      "type": "object"
+    },
+    "delay_seconds": {
+      "default": 1.0,
+      "maximum": 60,
+      "minimum": 0,
+      "title": "Delay Seconds",
+      "type": "number"
+    },
+    "lookup_unavailable": {
+      "default": false,
+      "title": "Lookup Unavailable",
+      "type": "boolean"
+    },
+    "inject_document": {
+      "default": false,
+      "title": "Inject Document",
+      "type": "boolean"
+    },
+    "service_overrides": {
+      "additionalProperties": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Service Overrides",
+      "type": "object"
+    }
+  },
+  "required": [
+    "objective",
+    "description",
+    "responses"
+  ],
+  "title": "ScenarioSpec",
+  "type": "object"
+}

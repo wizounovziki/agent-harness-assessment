@@ -1,0 +1,8 @@
+{
+  "dataset_version":"1.0.0",
+  "services":{
+    "payment":{"service_name":"payment","status":"DOWN","latency_ms":2500,"last_updated":"2026-11-12T09:00:00+08:00"},
+    "auth":{"service_name":"auth","status":"HEALTHY","latency_ms":42,"last_updated":"2026-11-12T09:00:00+08:00"},
+    "checkout":{"service_name":"checkout","status":"DEGRADED","latency_ms":850,"last_updated":"2026-11-12T09:00:00+08:00"}
+  }
+}

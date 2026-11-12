@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.env
+runtime/
+*.sqlite3*
+dist/
+.coverage
+htmlcov/
+docs/images/react-*.png
+docs/images/operations-layered-architecture-en-v1.png
+docs/image-generation-prompts.md

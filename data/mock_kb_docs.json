@@ -1,0 +1,6 @@
+[
+  {"doc_id":"payment-down","title":"Payment outage runbook","content":"For payment DOWN, check dependency connectivity and record the verified outage as SEV1. Include observed status and latency in the incident draft. Obtain user approval before creating any incident."},
+  {"doc_id":"payment-degraded","title":"Payment degradation guide","content":"For this mock scenario, payment DEGRADED with sustained latency is SEV2. Query current status, describe the evidence and propose an incident for user approval."},
+  {"doc_id":"auth-health","title":"Authentication health guide","content":"A HEALTHY auth service requires a status report. An incident is unnecessary unless additional evidence indicates a failure."},
+  {"doc_id":"severity-policy","title":"Incident severity reference","content":"SEV1: service outage. SEV2: significant degradation in the configured scenario. SEV3: limited impact. SEV4: informational. Apply the relevant service runbook and include evidence; user approval authorizes the exact draft."}
+]

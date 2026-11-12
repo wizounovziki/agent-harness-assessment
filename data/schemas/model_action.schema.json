@@ -1,0 +1,69 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "thought": {
+      "description": "Brief decision summary",
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Thought",
+      "type": "string"
+    },
+    "action_type": {
+      "enum": [
+        "CALL_TOOL",
+        "FINAL_ANSWER"
+      ],
+      "title": "Action Type",
+      "type": "string"
+    },
+    "tool_name": {
+      "anyOf": [
+        {
+          "enum": [
+            "search_knowledge_base",
+            "get_service_status",
+            "create_incident"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tool Name"
+    },
+    "tool_args": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Tool Args"
+    },
+    "final_answer": {
+      "anyOf": [
+        {
+          "maxLength": 12000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Final Answer"
+    }
+  },
+  "required": [
+    "thought",
+    "action_type"
+  ],
+  "title": "LLMAction",
+  "type": "object"
+}

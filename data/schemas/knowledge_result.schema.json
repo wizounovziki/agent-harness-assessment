@@ -1,0 +1,49 @@
+{
+  "$defs": {
+    "KnowledgeHit": {
+      "additionalProperties": false,
+      "properties": {
+        "doc_id": {
+          "title": "Doc Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "doc_id",
+        "title",
+        "content"
+      ],
+      "title": "KnowledgeHit",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "results": {
+      "items": {
+        "$ref": "#/$defs/KnowledgeHit"
+      },
+      "title": "Results",
+      "type": "array"
+    },
+    "total_hits": {
+      "minimum": 0,
+      "title": "Total Hits",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "results",
+    "total_hits"
+  ],
+  "title": "SearchKBOutput",
+  "type": "object"
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "scenario": "healthy",
+    "session_id": "c18de3e8186f49cda50365b8813256f7",
+    "status": "COMPLETED",
+    "stop_reason": "goal_completed",
+    "steps": 2,
+    "tool_attempts": 1,
+    "incident_count": 0,
+    "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+  },
+  {
+    "scenario": "incident",
+    "session_id": "02598f163cca4bd791e1b303e3acf0c4",
+    "status": "COMPLETED",
+    "stop_reason": "goal_completed",
+    "steps": 4,
+    "tool_attempts": 3,
+    "incident_count": 1,
+    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-6A4473A871."
+  },
+  {
+    "scenario": "retry",
+    "session_id": "805568f1610640b4a1197645347dd7fd",
+    "status": "COMPLETED",
+    "stop_reason": "goal_completed",
+    "steps": 2,
+    "tool_attempts": 2,
+    "incident_count": 0,
+    "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+  },
+  {
+    "scenario": "persistent_failure",
+    "session_id": "79f2fe4a91454f23943f347123447d31",
+    "status": "FAILED",
+    "stop_reason": "completion_evidence_missing",
+    "steps": 2,
+    "tool_attempts": 3,
+    "incident_count": 0,
+    "final_answer": "The task could not be completed with verified tool evidence. Current service status could not be verified."
+  },
+  {
+    "scenario": "loop",
+    "session_id": "242dad1c5a78459f923fe63a36194bae",
+    "status": "LIMIT_EXCEEDED",
+    "stop_reason": "step_limit",
+    "steps": 8,
+    "tool_attempts": 8,
+    "incident_count": 0,
+    "final_answer": "Execution stopped: step_limit."
+  },
+  {
+    "scenario": "rejected",
+    "session_id": "5b9f8ae5512040a5956f76233d5f55e7",
+    "status": "COMPLETED",
+    "stop_reason": "user_rejected",
+    "steps": 4,
+    "tool_attempts": 2,
+    "incident_count": 0,
+    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident creation was cancelled by the user. No incident was created."
+  }
+]

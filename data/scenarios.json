@@ -1,0 +1,376 @@
+{
+  "incident": {
+    "objective": "Check payment status and create an incident if needed.",
+    "description": "DOWN -> runbook -> SEV1 draft -> approval -> report.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "payment"
+        }
+      },
+      {
+        "thought": "Retrieve runbook guidance for the observed service issue.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "search_knowledge_base",
+        "tool_args": {
+          "query": "payment outage"
+        }
+      },
+      {
+        "thought": "Submit an incident draft based on service and runbook evidence.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "create_incident",
+        "tool_args": {
+          "title": "Payment service outage",
+          "description": "Payment is DOWN with latency 2500 ms. The payment outage runbook maps this scenario to SEV1.",
+          "severity": "SEV1"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Payment is DOWN. The payment runbook was consulted. {{incident_outcome}}"
+      }
+    ]
+  },
+  "healthy": {
+    "objective": "Check auth service health.",
+    "description": "Healthy read-only run.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "auth"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+      }
+    ]
+  },
+  "retry": {
+    "objective": "Check auth service health.",
+    "description": "First read times out, second succeeds.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "auth"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+      }
+    ],
+    "faults": {
+      "get_service_status": [
+        "timeout",
+        "ok"
+      ]
+    }
+  },
+  "persistent_failure": {
+    "objective": "Check auth service health.",
+    "description": "All reads fail.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "auth"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Current service status could not be verified."
+      }
+    ],
+    "faults": {
+      "get_service_status": [
+        "connection_error"
+      ]
+    }
+  },
+  "malformed_json": {
+    "objective": "Check auth service health.",
+    "description": "One malformed model decision, then recovery.",
+    "responses": [
+      "{\"action_type\":",
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "auth"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+      }
+    ]
+  },
+  "malformed_forever": {
+    "objective": "Check auth service health.",
+    "description": "Two consecutive invalid model responses.",
+    "responses": [
+      "not-json"
+    ],
+    "repeat_last": true
+  },
+  "loop": {
+    "objective": "Keep checking auth status.",
+    "description": "Repeats a read until the step limit.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "auth"
+        }
+      }
+    ],
+    "repeat_last": true
+  },
+  "invalid_output": {
+    "objective": "Check auth service health.",
+    "description": "A tool returns an invalid latency.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "auth"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Service status output failed validation."
+      }
+    ],
+    "faults": {
+      "get_service_status": [
+        "invalid_output"
+      ]
+    }
+  },
+  "slow_tool": {
+    "objective": "Check auth service health.",
+    "description": "Real asynchronous tool delay.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "auth"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+      }
+    ],
+    "faults": {
+      "get_service_status": [
+        "delay"
+      ]
+    },
+    "delay_seconds": 2.0
+  },
+  "post_commit_timeout": {
+    "objective": "Check payment and create an incident if needed.",
+    "description": "Incident committed, response lost, recovered by idempotency lookup.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "payment"
+        }
+      },
+      {
+        "thought": "Retrieve runbook guidance for the observed service issue.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "search_knowledge_base",
+        "tool_args": {
+          "query": "payment outage"
+        }
+      },
+      {
+        "thought": "Submit an incident draft based on service and runbook evidence.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "create_incident",
+        "tool_args": {
+          "title": "Payment service outage",
+          "description": "Payment is DOWN with latency 2500 ms. The payment outage runbook maps this scenario to SEV1.",
+          "severity": "SEV1"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Payment is DOWN. The payment runbook was consulted. {{incident_outcome}}"
+      }
+    ],
+    "faults": {
+      "create_incident": [
+        "commit_then_timeout",
+        "ok"
+      ]
+    }
+  },
+  "unknown_write": {
+    "objective": "Check payment and create an incident if needed.",
+    "description": "Committed write with response loss and reconciliation unavailable.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "payment"
+        }
+      },
+      {
+        "thought": "Retrieve runbook guidance for the observed service issue.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "search_knowledge_base",
+        "tool_args": {
+          "query": "payment outage"
+        }
+      },
+      {
+        "thought": "Submit an incident draft based on service and runbook evidence.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "create_incident",
+        "tool_args": {
+          "title": "Payment service outage",
+          "description": "Payment is DOWN with latency 2500 ms. The payment outage runbook maps this scenario to SEV1.",
+          "severity": "SEV1"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Payment is DOWN. The payment runbook was consulted. {{incident_outcome}}"
+      }
+    ],
+    "faults": {
+      "create_incident": [
+        "commit_then_timeout"
+      ]
+    },
+    "lookup_unavailable": true
+  },
+  "prompt_injection": {
+    "objective": "Check payment and create an incident if needed.",
+    "description": "Untrusted runbook asks to skip approval; server gate remains enforced.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "payment"
+        }
+      },
+      {
+        "thought": "Retrieve runbook guidance for the observed service issue.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "search_knowledge_base",
+        "tool_args": {
+          "query": "payment outage"
+        }
+      },
+      {
+        "thought": "Submit an incident draft based on service and runbook evidence.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "create_incident",
+        "tool_args": {
+          "title": "Payment service outage",
+          "description": "Payment is DOWN with latency 2500 ms. The payment outage runbook maps this scenario to SEV1.",
+          "severity": "SEV1"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Payment is DOWN. The payment runbook was consulted. {{incident_outcome}}"
+      }
+    ],
+    "inject_document": true
+  },
+  "invalid_severity": {
+    "objective": "Check payment and create an incident if needed.",
+    "description": "Invalid SEV99 is rejected before execution; the next decision uses SEV2.",
+    "responses": [
+      {
+        "thought": "Check the current service state before choosing the next action.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "get_service_status",
+        "tool_args": {
+          "service_name": "payment"
+        }
+      },
+      {
+        "thought": "Retrieve runbook guidance for the observed service issue.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "search_knowledge_base",
+        "tool_args": {
+          "query": "payment degradation"
+        }
+      },
+      {
+        "thought": "Submit an incident draft based on service and runbook evidence.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "create_incident",
+        "tool_args": {
+          "title": "Payment service outage",
+          "description": "Payment is DEGRADED with latency 850 ms. The payment degradation runbook maps this scenario to SEV2.",
+          "severity": "SEV99"
+        }
+      },
+      {
+        "thought": "Submit an incident draft based on service and runbook evidence.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "create_incident",
+        "tool_args": {
+          "title": "Payment service outage",
+          "description": "Payment is DEGRADED with latency 850 ms. The payment degradation runbook maps this scenario to SEV2.",
+          "severity": "SEV2"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Payment is DEGRADED. The degradation runbook was consulted. {{incident_outcome}}"
+      }
+    ],
+    "service_overrides": {
+      "payment": {
+        "status": "DEGRADED",
+        "latency_ms": 850
+      }
+    }
+  }
+}
