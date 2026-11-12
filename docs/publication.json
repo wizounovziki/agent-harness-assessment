@@ -4,8 +4,8 @@
   "dataset_delivery": "git_repository",
   "status": "published",
   "public_access_verified": true,
-  "verified_code_commit": "3fa952aa667d7f722b1cbafcb88bc228f58e8702",
-  "verified_at": "2026-11-12T15:22:26.700911+00:00",
+  "verified_code_commit": "32a9564c60c446519c33ee4b2353a96bf6672b46",
+  "verified_at": "2026-11-12T17:21:47.150770+00:00",
   "anonymous_checks": {
     "raw_files": [
       {
@@ -19,7 +19,17 @@
         "matches_local": true
       },
       {
-        "path": "docs/live-model-results.json",
+        "path": "docs/operations-safety.md",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "docs/business-architecture-and-workflow-en.md",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "docs/live-change-results.json",
         "status": 200,
         "matches_local": true
       },
@@ -34,32 +44,12 @@
         "matches_local": true
       },
       {
-        "path": "docs/credential-scan.json",
-        "status": 200,
-        "matches_local": true
-      },
-      {
         "path": "postman_collection.json",
         "status": 200,
         "matches_local": true
       },
       {
-        "path": "postman_environment.json",
-        "status": 200,
-        "matches_local": true
-      },
-      {
-        "path": "data/mock_services.json",
-        "status": 200,
-        "matches_local": true
-      },
-      {
-        "path": "data/mock_kb_docs.json",
-        "status": 200,
-        "matches_local": true
-      },
-      {
-        "path": "data/scenarios.json",
+        "path": "data/mock_deployments.json",
         "status": 200,
         "matches_local": true
       },
@@ -67,23 +57,41 @@
         "path": "data/manifest.json",
         "status": 200,
         "matches_local": true
+      },
+      {
+        "path": "docs/images/operations-layered-architecture-en-v3.png",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "docs/images/operations-business-workflow-en-v2.png",
+        "status": 200,
+        "matches_local": true
       }
     ],
     "source_zip_download": true
   },
   "public_checkout_tests": {
-    "tests": 61,
+    "tests": 96,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
-  "dataset_bytes": 23203,
-  "source_fingerprint": "d1fa4f3259bd145f5b24b22d46d5e0c12906920cbd7f04c20b306d138cbc715b",
+  "dataset_bytes": 52492,
+  "source_fingerprint": "4c1e196ad8586c636365d71db90cc6ac6d0ee95a4500beb3d161f0c25096b20e",
   "live_model": {
     "provider": "DeepSeek",
     "model": "deepseek-flash",
     "passed": 6,
     "total": 6,
     "requests": 16
-  }
+  },
+  "live_change_model": {
+    "model": "deepseek-flash",
+    "passed": 4,
+    "total": 4,
+    "requests": 18,
+    "total_tokens": 60712
+  },
+  "dataset_version": "1.1.0"
 }

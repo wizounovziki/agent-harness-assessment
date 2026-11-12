@@ -1,7 +1,7 @@
 [
   {
     "scenario": "healthy",
-    "session_id": "209ac39158784491b46417819d1424dc",
+    "session_id": "041059ad3303433da5b4e74567d264a1",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 2,
@@ -12,18 +12,18 @@
   },
   {
     "scenario": "incident",
-    "session_id": "036fc6101f4144f5bb5e4d599b910044",
+    "session_id": "4646076c70b742aa96d8cd6c997d6b0e",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 4,
     "tool_attempts": 3,
     "incident_count": 1,
-    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-2956E33D65.",
+    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-625D9479C8.",
     "changes": []
   },
   {
     "scenario": "retry",
-    "session_id": "5937f5721b4146dcaff75dbee7eef648",
+    "session_id": "20c9296e98ae4526bb31aadee3bf4626",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 2,
@@ -34,7 +34,7 @@
   },
   {
     "scenario": "persistent_failure",
-    "session_id": "2d632dcccd5f49d58e747ab43fbdebcb",
+    "session_id": "a3aa912135d840498ac202758da273f3",
     "status": "FAILED",
     "stop_reason": "completion_evidence_missing",
     "steps": 2,
@@ -45,7 +45,7 @@
   },
   {
     "scenario": "loop",
-    "session_id": "574f6d8659c741b18000563132aefab0",
+    "session_id": "75d2fff23f6f476c8dea41a9a204c6bf",
     "status": "LIMIT_EXCEEDED",
     "stop_reason": "step_limit",
     "steps": 8,
@@ -56,7 +56,7 @@
   },
   {
     "scenario": "rejected",
-    "session_id": "2c0133c84ae046bcac045df25a038d11",
+    "session_id": "0fd1cd5e19ba4cc1a64ea1dccfb6eacf",
     "status": "COMPLETED",
     "stop_reason": "user_rejected",
     "steps": 4,
@@ -67,17 +67,17 @@
   },
   {
     "scenario": "deploy_success",
-    "session_id": "47f4eae501ce48e89fd79ee99c9fd706",
+    "session_id": "a6d3b312f0b44c6ea77c4968a9d8c288",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 5,
     "tool_attempts": 4,
     "incident_count": 0,
-    "final_answer": "Deployment chg-pre-e3368a0b0e678a068b757f56 is verified healthy.",
+    "final_answer": "Deployment chg-pre-8681a642787a8be170d248d3 is verified healthy.",
     "changes": [
       {
-        "change_id": "chg-pre-e3368a0b0e678a068b757f56",
-        "snapshot_id": "snap-pre-e3368a0b0e678a068b757f56",
+        "change_id": "chg-pre-8681a642787a8be170d248d3",
+        "snapshot_id": "snap-pre-8681a642787a8be170d248d3",
         "plan": {
           "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
           "config_version": "config-v2",
@@ -90,7 +90,7 @@
           "surge_replicas": 1
         },
         "status": "APPLIED",
-        "revision": 5,
+        "revision": 6,
         "health": "HEALTHY",
         "rollback_snapshot_id": null,
         "verified": true,
@@ -100,7 +100,7 @@
   },
   {
     "scenario": "deploy_capacity_blocked",
-    "session_id": "6dbde63d6e3e43d2bffcb039d7d5f6cd",
+    "session_id": "72c8911d64e84e2fae6035363cdb21c0",
     "status": "FAILED",
     "stop_reason": "completion_evidence_missing",
     "steps": 2,
@@ -111,17 +111,17 @@
   },
   {
     "scenario": "deploy_rollback",
-    "session_id": "5d7a41f37d8b44c99f3bf59861ec7cc1",
+    "session_id": "eefac269d33747e89e53a783f132c9b6",
     "status": "FAILED",
     "stop_reason": "change_rolled_back",
     "steps": 4,
     "tool_attempts": 3,
     "incident_count": 0,
-    "final_answer": "The change was rolled back to its saved snapshot. Change chg-pre-09a23ba98da91d6b7379cf18 failed health verification and was rolled back.",
+    "final_answer": "The change was rolled back to its saved snapshot. Change chg-pre-4451826c17d4e32105f8deef failed health verification and was rolled back.",
     "changes": [
       {
-        "change_id": "chg-pre-09a23ba98da91d6b7379cf18",
-        "snapshot_id": "snap-pre-09a23ba98da91d6b7379cf18",
+        "change_id": "chg-pre-4451826c17d4e32105f8deef",
+        "snapshot_id": "snap-pre-4451826c17d4e32105f8deef",
         "plan": {
           "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
           "config_version": "config-v2",
@@ -134,9 +134,9 @@
           "surge_replicas": 1
         },
         "status": "ROLLED_BACK",
-        "revision": 9,
+        "revision": 11,
         "health": "HEALTHY",
-        "rollback_snapshot_id": "rollback-chg-pre-09a23ba98da91d6b7379cf18",
+        "rollback_snapshot_id": "rollback-chg-pre-4451826c17d4e32105f8deef",
         "verified": true,
         "owner_id": "example-user"
       }
@@ -144,17 +144,17 @@
   },
   {
     "scenario": "deploy_late_failure",
-    "session_id": "5612e4b25036451d9f17554009a21eee",
+    "session_id": "01bb951d1e464a2fa37f113c7ca09b02",
     "status": "FAILED",
     "stop_reason": "change_rolled_back",
     "steps": 6,
     "tool_attempts": 5,
     "incident_count": 0,
-    "final_answer": "The change was rolled back to its saved snapshot. Change chg-pre-1531e8d4c15e5d29bc548172 was rolled back after the failed verification.",
+    "final_answer": "The change was rolled back to its saved snapshot. Change chg-pre-459802e76d1c80f5c28a4582 was rolled back after the failed verification.",
     "changes": [
       {
-        "change_id": "chg-pre-1531e8d4c15e5d29bc548172",
-        "snapshot_id": "snap-pre-1531e8d4c15e5d29bc548172",
+        "change_id": "chg-pre-459802e76d1c80f5c28a4582",
+        "snapshot_id": "snap-pre-459802e76d1c80f5c28a4582",
         "plan": {
           "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
           "config_version": "config-v2",
@@ -167,9 +167,9 @@
           "surge_replicas": 1
         },
         "status": "ROLLED_BACK",
-        "revision": 9,
+        "revision": 11,
         "health": "HEALTHY",
-        "rollback_snapshot_id": "rollback-chg-pre-1531e8d4c15e5d29bc548172",
+        "rollback_snapshot_id": "rollback-chg-pre-459802e76d1c80f5c28a4582",
         "verified": true,
         "owner_id": "example-user"
       }
@@ -177,7 +177,7 @@
   },
   {
     "scenario": "deploy_rollback_failure",
-    "session_id": "679ff5778f754bd1b4c00e44d1364461",
+    "session_id": "71e5322ac7c0457fb28a327e4f4e2ec0",
     "status": "NEEDS_REVIEW",
     "stop_reason": "change_recovery_requires_review",
     "steps": 3,
@@ -186,8 +186,8 @@
     "final_answer": "The service change requires operator recovery review.",
     "changes": [
       {
-        "change_id": "chg-pre-4cb138907d37516bda8f62ee",
-        "snapshot_id": "snap-pre-4cb138907d37516bda8f62ee",
+        "change_id": "chg-pre-cdc69c3f03aecdc1c4e5b1d4",
+        "snapshot_id": "snap-pre-cdc69c3f03aecdc1c4e5b1d4",
         "plan": {
           "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
           "config_version": "config-v2",
@@ -200,9 +200,9 @@
           "surge_replicas": 1
         },
         "status": "NEEDS_REVIEW",
-        "revision": 9,
+        "revision": 11,
         "health": "UNHEALTHY",
-        "rollback_snapshot_id": "rollback-chg-pre-4cb138907d37516bda8f62ee",
+        "rollback_snapshot_id": "rollback-chg-pre-cdc69c3f03aecdc1c4e5b1d4",
         "verified": false,
         "owner_id": "example-user"
       }
