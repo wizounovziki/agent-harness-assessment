@@ -30,7 +30,7 @@ Evidence: [live model results](./live-model-results.json), [API collection](./ap
 - [x] Submission repository selected: https://github.com/wizounovziki/agent-harness-assessment
 - [x] Dataset submission method selected: include the small dataset under `data/` in the same repository.
 - [x] Publish the complete project to `main`.
-- [x] Verify repository and dataset access without authentication: seven raw files and the complete source ZIP downloaded successfully.
+- [x] Verify repository and dataset access without authentication: twelve raw files and the complete source ZIP downloaded successfully.
 - [x] Install from the public source download and run all 61 tests successfully.
 
 Publication state and public URLs are recorded in `publication.json` and `validation-results.json`.

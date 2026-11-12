@@ -12,6 +12,8 @@ The implementation follows the supplied Python framework specification: Python 3
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then run from the repository root:
 
+On Windows, extract or clone into a short path such as `C:\work\agent-harness` to keep installed dependency paths within filesystem limits.
+
 ```powershell
 uv sync --frozen
 uv run pytest -q

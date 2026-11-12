@@ -4,46 +4,86 @@
   "dataset_delivery": "git_repository",
   "status": "published",
   "public_access_verified": true,
-  "verified_code_commit": "1f120efc8c9933b651b06cf11120d0755a3ff8e1",
-  "verified_at": "2026-11-12T14:51:53.184012+00:00",
+  "verified_code_commit": "3fa952aa667d7f722b1cbafcb88bc228f58e8702",
+  "verified_at": "2026-11-12T15:22:26.700911+00:00",
   "anonymous_checks": {
     "raw_files": [
       {
         "path": "README.md",
-        "status": 200
-      },
-      {
-        "path": "data/mock_services.json",
-        "status": 200
-      },
-      {
-        "path": "data/mock_kb_docs.json",
-        "status": 200
-      },
-      {
-        "path": "data/scenarios.json",
-        "status": 200
-      },
-      {
-        "path": "data/manifest.json",
-        "status": 200
-      },
-      {
-        "path": "postman_collection.json",
-        "status": 200
+        "status": 200,
+        "matches_local": true
       },
       {
         "path": "docs/implementation-report.md",
-        "status": 200
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "docs/live-model-results.json",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "docs/api-reference.md",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "docs/openapi.json",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "docs/credential-scan.json",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "postman_collection.json",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "postman_environment.json",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "data/mock_services.json",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "data/mock_kb_docs.json",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "data/scenarios.json",
+        "status": 200,
+        "matches_local": true
+      },
+      {
+        "path": "data/manifest.json",
+        "status": 200,
+        "matches_local": true
       }
     ],
     "source_zip_download": true
   },
   "public_checkout_tests": {
-    "tests": 57,
+    "tests": 61,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
-  "dataset_bytes": 23203
+  "dataset_bytes": 23203,
+  "source_fingerprint": "d1fa4f3259bd145f5b24b22d46d5e0c12906920cbd7f04c20b306d138cbc715b",
+  "live_model": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "passed": 6,
+    "total": 6,
+    "requests": 16
+  }
 }
