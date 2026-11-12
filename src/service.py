@@ -10,7 +10,7 @@ from uuid import uuid4
 from src.config import Settings
 from src.errors import ConflictError, PersistenceError
 from src.harness import AgentHarness, ApprovalCallback
-from src.llm_client import LLMProvider, OpenAILLMProvider, ScriptedMockLLM
+from src.llm_client import DeepSeekLLMProvider, LLMProvider, OpenAILLMProvider, ScriptedMockLLM
 from src.schemas import AgentState, AgentStatus, StepTrace, utc_now
 from src.storage import SQLiteStore
 from src.tools import Dataset, MockTools, ToolRegistry
@@ -29,14 +29,17 @@ class RunManager:
             and llm_factory is None
             and not (settings.llm_api_key and settings.llm_model)
         ):
-            raise ValueError("Real mode requires OPENAI_API_KEY (or LLM_API_KEY) and LLM_MODEL")
+            raise ValueError("Real mode requires a model API key and LLM_MODEL")
         self.store = SQLiteStore(settings.database_path)
         self.tracer = Tracer(self.store, settings.trace_dir)
         self.dataset = Dataset(settings.dataset_path)
         self._factory = llm_factory
         self._real_provider = None
         if settings.llm_mode == "real" and llm_factory is None:
-            self._real_provider = OpenAILLMProvider(
+            provider_class = (
+                DeepSeekLLMProvider if settings.llm_provider == "deepseek" else OpenAILLMProvider
+            )
+            self._real_provider = provider_class(
                 settings.llm_api_key, settings.llm_model, base_url=settings.llm_base_url
             )
         self.tasks: dict[str, asyncio.Task] = {}

@@ -92,20 +92,32 @@ Copy `.env.example` to `.env`, then set:
 
 ```dotenv
 LLM_MODE=real
-OPENAI_API_KEY=<set locally>
-LLM_MODEL=<a model available to your account with JSON output support>
+LLM_PROVIDER=deepseek
+DEEPSEEK_API_KEY=<set locally>
+LLM_MODEL=deepseek-flash
+LLM_BASE_URL=https://api.deepseek.com
 ```
 
 Run the CLI or restart the API. The model interprets the supplied objective and uses the mock service catalog and runbooks through the tools. Every tool write still requires approval.
+
+The DeepSeek profile uses `POST /chat/completions`, JSON output, disabled thinking, temperature 0 and a 2,048-token output cap. Live evaluation passed all 6 cases using `deepseek-flash`: 16 requests and 11,577 total tokens. Full results and sanitized traces are in [live-model-results.json](docs/live-model-results.json). To repeat the paid evaluation with a hidden credential prompt:
+
+```powershell
+uv run python -m scripts.live_model_evaluation --prompt-key
+```
+
+The evaluation uses a 90-second active budget and 30-second model timeout per case; its step-limit case allows one request. An independent test controller explicitly approves or rejects the saved mock proposal. Production CLI/API approval remains interactive. Environment credentials also work with `LLM_MODE=real` and `LLM_PROVIDER=deepseek`.
 
 ## Configuration
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `LLM_MODE` | `scripted` | `scripted` or `real` |
-| `OPENAI_API_KEY` / `LLM_API_KEY` | empty | Required for real mode; stays outside model context and traces |
+| `LLM_PROVIDER` | `openai_compatible` | `deepseek` enables the verified DeepSeek request profile |
+| `LLM_API_KEY` | empty | Explicit provider key; takes precedence over provider-specific variables |
+| `DEEPSEEK_API_KEY` / `OPENAI_API_KEY` | empty | Provider-specific fallback for DeepSeek / generic mode; excluded from model context and traces |
 | `LLM_MODEL` | empty | Required for real mode |
-| `LLM_BASE_URL` | official endpoint | Optional compatible endpoint |
+| `LLM_BASE_URL` | provider endpoint | DeepSeek defaults to `https://api.deepseek.com`; generic mode defaults to OpenAI |
 | `API_TOKEN` | `local-demo-token` | Demo user's bearer token; choose a private value for a shared deployment |
 | `DATABASE_PATH` | `runtime/harness.sqlite3` | SQLite source of truth |
 | `TRACE_DIR` | `runtime/traces` | Flushed JSONL exports |
@@ -144,7 +156,7 @@ uv run python -m scripts.prepare_submission
 uv run python -m scripts.verify_archives
 ```
 
-See [implementation report](docs/implementation-report.md), [validation results](docs/validation-results.json), [mock dataset](data/DATASET.md), and [submission checklist](docs/submission-checklist.md). Live model smoke verification is deferred for this delivery. Release archives are created under `dist/`. `uv.lock` and `requirements.txt` pin the tested dependencies.
+See [implementation report and project tree](docs/implementation-report.md), [validation results](docs/validation-results.json), [API reference](docs/api-reference.md), [mock dataset](data/DATASET.md), and [submission checklist](docs/submission-checklist.md). Live DeepSeek results are included. Release archives are created under `dist/`. `uv.lock` and `requirements.txt` pin the tested dependencies.
 
 The small mock dataset is delivered in this repository's `data/` directory alongside its schemas, version manifest and field guide. Code and data can be downloaded together using GitHub's **Code → Download ZIP**.
 

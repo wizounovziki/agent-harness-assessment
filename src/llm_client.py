@@ -1,7 +1,9 @@
 """Injected model boundary: deterministic scripts and the official async SDK."""
 
 import json
+import time
 from abc import ABC, abstractmethod
+from collections import deque
 from copy import deepcopy
 from typing import Any
 
@@ -87,23 +89,46 @@ class OpenAILLMProvider(LLMProvider):
         client: AsyncOpenAI | None = None,
     ):
         if not api_key or not model:
-            raise ValueError("Real mode requires OPENAI_API_KEY (or LLM_API_KEY) and LLM_MODEL")
+            raise ValueError("Real mode requires a model API key and LLM_MODEL")
         self.model = model
         self.client = client or AsyncOpenAI(api_key=api_key, base_url=base_url, max_retries=0)
+        self.request_options: dict[str, Any] = {}
+        # Bounded operational metadata; never retain headers, prompts or response bodies.
+        self.metrics: deque[dict[str, Any]] = deque(maxlen=256)
 
     async def generate(self, messages: list[ChatMessage], step_number: int) -> str:
+        started = time.monotonic()
+        metric: dict[str, Any] = {"step": step_number, "status": "cancelled"}
         try:
             response = await self.client.chat.completions.create(
                 model=self.model,
                 messages=[message.model_dump() for message in messages],  # type: ignore[arg-type]
                 response_format={"type": "json_object"},
+                **self.request_options,
             )
+            metric.update(
+                status="received",
+                response_model=response.model,
+                request_id=response.id,
+                finish_reason=response.choices[0].finish_reason if response.choices else None,
+            )
+            if response.usage:
+                metric["usage"] = {
+                    key: getattr(response.usage, key)
+                    for key in ("prompt_tokens", "completion_tokens", "total_tokens")
+                }
         except APITimeoutError as exc:
+            metric["status"] = "timeout"
             raise TimeoutError("Model request timed out") from exc
         except APIConnectionError as exc:
+            metric["status"] = "connection_error"
             raise ConnectionError("Model connection failed") from exc
         except APIStatusError as exc:
+            metric.update(status="http_error", http_status=exc.status_code)
             raise ModelProviderError(f"Model API returned HTTP {exc.status_code}") from exc
+        finally:
+            metric["duration_ms"] = round((time.monotonic() - started) * 1000, 2)
+            self.metrics.append(metric)
         if not response.choices or response.choices[0].finish_reason == "length":
             raise ModelProviderError("Model response missing or truncated")
         content = response.choices[0].message.content
@@ -113,3 +138,16 @@ class OpenAILLMProvider(LLMProvider):
 
     async def aclose(self) -> None:
         await self.client.close()
+
+
+class DeepSeekLLMProvider(OpenAILLMProvider):
+    """DeepSeek's documented Chat Completions profile with bounded JSON output."""
+
+    def __init__(self, api_key: str, model: str, **kwargs):
+        kwargs["base_url"] = kwargs.get("base_url") or "https://api.deepseek.com"
+        super().__init__(api_key, model, **kwargs)
+        self.request_options = {
+            "temperature": 0,
+            "max_tokens": 2048,
+            "extra_body": {"thinking": {"type": "disabled"}},
+        }

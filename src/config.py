@@ -17,6 +17,7 @@ class Settings:
     trace_dir: Path = Path("runtime/traces")
     dataset_path: Path = PROJECT_ROOT / "data"
     llm_mode: str = "scripted"
+    llm_provider: str = "openai_compatible"
     llm_model: str = ""
     llm_api_key: str = field(default="", repr=False)
     llm_base_url: str | None = None
@@ -34,13 +35,18 @@ class Settings:
         mode = os.getenv("LLM_MODE", "scripted")
         if mode not in {"scripted", "real"}:
             raise ValueError("LLM_MODE must be scripted or real")
+        provider = os.getenv("LLM_PROVIDER", "openai_compatible")
+        if provider not in {"openai_compatible", "deepseek"}:
+            raise ValueError("LLM_PROVIDER must be openai_compatible or deepseek")
+        provider_key = "DEEPSEEK_API_KEY" if provider == "deepseek" else "OPENAI_API_KEY"
         return cls(
             database_path=Path(os.getenv("DATABASE_PATH", "runtime/harness.sqlite3")),
             trace_dir=Path(os.getenv("TRACE_DIR", "runtime/traces")),
             dataset_path=Path(os.getenv("DATASET_PATH", str(PROJECT_ROOT / "data"))),
             llm_mode=mode,
+            llm_provider=provider,
             llm_model=os.getenv("LLM_MODEL", ""),
-            llm_api_key=os.getenv("OPENAI_API_KEY", os.getenv("LLM_API_KEY", "")),
+            llm_api_key=os.getenv("LLM_API_KEY") or os.getenv(provider_key, ""),
             llm_base_url=os.getenv("LLM_BASE_URL") or None,
             api_token=os.getenv("API_TOKEN", "local-demo-token"),
             limits=ExecutionLimits(**values),

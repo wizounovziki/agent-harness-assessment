@@ -1,5 +1,5 @@
 {
-  "source_fingerprint": "bec95a7edf87b5a75e8c469fe574b7b749e7898ff492fbf246d23e09e83634b7",
+  "source_fingerprint": "d1fa4f3259bd145f5b24b22d46d5e0c12906920cbd7f04c20b306d138cbc715b",
   "source_sha256": {
     "data/mock_kb_docs.json": "cf08947ef928adfb9a07efcf3d118e152d8ea57d81361d1e35555a4bd924d440",
     "data/mock_services.json": "1717afab3b99d6becb756619f2b946addda90eb7d58cf1ab9baaabb537acb16f",
@@ -13,17 +13,19 @@
     "scripts/__init__.py": "0d9be0ae42a8c85f3959d9341b09746e78ac81302f13a57e8c01fdea28bd6df3",
     "scripts/build_mock_dataset.py": "6de79f175ba510dd2443dc4224e19d18987c73c8fdf70c5d629012ee3428c42a",
     "scripts/build_postman.py": "23e3d89c3490d6260262e40cfacded5c8be8550a45c0c259fbc86bae95146656",
+    "scripts/export_openapi.py": "c6d0c332aa94fca3be40eb81dcaa2cc87f0a8f691cc0a3ee359e8d0b450c2751",
+    "scripts/live_model_evaluation.py": "afffdbbed2b1144f3b07ff5dbb6f0b753a6418f23150f7a0850426d16ad05acb",
     "scripts/live_model_smoke.py": "6a8c4eec398fb23b3c29df4fd22f08479a8935d8d0ffc009d4982f7d08c8653a",
-    "scripts/prepare_submission.py": "d753ec2e346c6e8220242c32f97c00f3ebfc2e492e6ed29ce340ecfca37756f6",
+    "scripts/prepare_submission.py": "41a8016c266ef8395880fe16bc2a1a09d20edc61967f5692292ed4cb1c8cf553",
     "scripts/verify_archives.py": "db4d003e3e3b812248b6d67132d9878f99edcb3625e65cb58791d9ba85561116",
     "src/__init__.py": "60e253ead7625d48e4e67f59673627dd41290b57e6248a907d9c465605883502",
     "src/api.py": "09911c249cbd832b4af73b1bf7bd1a89d7c47bba00d70c0b1a5675890625ead2",
-    "src/config.py": "4c84c04b92f2ae5648cc030e0e5799df806e9499e13e07e014e7cdc7619eddb8",
+    "src/config.py": "cf44c3a118ec411552029b3cc239164fdb65ffd7e6f41c00d52bf2cbeb7cac5c",
     "src/errors.py": "52a3328409365eb5c525be54cb513bcc97cac1489c1e60d2ccbb0c334af1b51c",
     "src/harness.py": "e3e1fb45550ab71af27077bfed857259d900fd2090ddf3e5542847a2e0d1b9c1",
-    "src/llm_client.py": "ad90336ebad11dd83ed28687942f71b94b825f1c2acdc160b8e488b5577f4bac",
+    "src/llm_client.py": "8ff0a1d4ed10dfd81c3bb441f9133367ed06a4baf287f0d4e055ea06a19f04eb",
     "src/schemas.py": "1e858f84cafc9f7121014e451c00cfa56dc883291a81bb8f7fd9dd5e45c4f4da",
-    "src/service.py": "343b261973778b04bc5b963cabc5c7287a99dde5701c20b579c0c22a66e62160",
+    "src/service.py": "9b15990ba4b4d76814cbb6cab9ab2221381821ea6e4d22ddcdebe44001b1a7d2",
     "src/storage.py": "68f16b3800bcc6d87aa063feda937de3fa0d5e328322f5f78e311c846e765cd4",
     "src/tools.py": "51a0e4967f5324dd257268e9516433956b8ef39552459b437f2c3bbcd55e1c5a",
     "src/tracer.py": "87c2e5b526716a478c080f4b805d9993a640d90e32564b3878d8d3b7b1786333",
@@ -31,7 +33,7 @@
     "tests/test_api.py": "b06a382c25f7962ecfedd50fc201a131a35972be8f8cc69b14fb94539c5fcb07",
     "tests/test_delivery.py": "f9edd917fd8992928556ad8302bd4239782b5e8f7bfb1ec465b1da0ded606b96",
     "tests/test_happy_path.py": "15c3078ee7d4141972e9ee3fa5cb36885ff72fa1ad98e99cea15b3f0822b2c09",
-    "tests/test_llm_client.py": "47e5a8a8ffff25e500be2fea4a4f6ca928bc52bb6212d7bf2502927ffa96477b",
+    "tests/test_llm_client.py": "4a22fee078c600b5627a97e4c7911ce7e67e015969c03508e28d3a9660e66cff",
     "tests/test_resilience.py": "bff9c76d6e8d56b5a10119383aa4b0d8b5b70c8364dc31b9f343d4e39803b452",
     "tests/test_safety.py": "f057c5e3a9e0673245c58fc1599b9f41e62def76db8ec0a1a42614584b2aad70",
     "uv.lock": "c39b05a772c20d5edd86d46c01b27eb97b71a5c34e652447b5466e15e51e0792"
@@ -47,7 +49,7 @@
   },
   "automated_tests": {
     "executed": true,
-    "tests": 57,
+    "tests": 61,
     "failures": 0,
     "errors": 0,
     "skipped": 0
@@ -106,8 +108,8 @@
   "clean_install": {
     "executed": true,
     "installation": "uv sync --frozen --python 3.12 from extracted source archive",
-    "source_fingerprint": "bec95a7edf87b5a75e8c469fe574b7b749e7898ff492fbf246d23e09e83634b7",
-    "tests": 57,
+    "source_fingerprint": "d1fa4f3259bd145f5b24b22d46d5e0c12906920cbd7f04c20b306d138cbc715b",
+    "tests": 61,
     "failures": 0,
     "errors": 0,
     "skipped": 0
@@ -115,7 +117,7 @@
   "examples": [
     {
       "scenario": "healthy",
-      "session_id": "54f7325d7f74454386ff8b8bfb1c4bd4",
+      "session_id": "8c30d39b70dd4924b3fb9d804fdeddf8",
       "status": "COMPLETED",
       "stop_reason": "goal_completed",
       "steps": 2,
@@ -125,17 +127,17 @@
     },
     {
       "scenario": "incident",
-      "session_id": "b9a8fd182cd441508564a1018a214fe9",
+      "session_id": "73ad4536015b4764acfa5b5d210087a6",
       "status": "COMPLETED",
       "stop_reason": "goal_completed",
       "steps": 4,
       "tool_attempts": 3,
       "incident_count": 1,
-      "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-5B310B9630."
+      "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-78E9702B39."
     },
     {
       "scenario": "retry",
-      "session_id": "e933626bcc9c440ab8566500b42d5e59",
+      "session_id": "85fc7f9b563846699d18dc0e3574aa5b",
       "status": "COMPLETED",
       "stop_reason": "goal_completed",
       "steps": 2,
@@ -145,7 +147,7 @@
     },
     {
       "scenario": "persistent_failure",
-      "session_id": "8702955246424d88b3e7a017e93c7056",
+      "session_id": "738d36e918cb4f0686274a269f761bde",
       "status": "FAILED",
       "stop_reason": "completion_evidence_missing",
       "steps": 2,
@@ -155,7 +157,7 @@
     },
     {
       "scenario": "loop",
-      "session_id": "29b1d812bd1e4c75a6bf7e2ae725a405",
+      "session_id": "0a7e8b2765e94e1690447550afa5ffa8",
       "status": "LIMIT_EXCEEDED",
       "stop_reason": "step_limit",
       "steps": 8,
@@ -165,7 +167,7 @@
     },
     {
       "scenario": "rejected",
-      "session_id": "3c6208203e9746adb9b6615dff32f65d",
+      "session_id": "853b866d885c4877aa2269e0840e7ece",
       "status": "COMPLETED",
       "stop_reason": "user_rejected",
       "steps": 4,
@@ -175,9 +177,414 @@
     }
   ],
   "live_model": {
-    "executed": false,
-    "status": "deferred_by_user",
-    "reason": "Live model verification is deferred for this delivery at the user's request."
+    "executed": true,
+    "started_at": "2026-11-12T15:10:47.063560+00:00",
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com/chat/completions",
+    "request_settings": {
+      "thinking": "disabled",
+      "temperature": 0,
+      "max_tokens": 2048,
+      "response_format": "json_object",
+      "sdk_max_retries": 0
+    },
+    "limits": {
+      "max_steps": 8,
+      "max_execution_seconds": 90.0,
+      "max_tool_attempts": 16,
+      "model_timeout_seconds": 30.0,
+      "tool_timeout_seconds": 3.0,
+      "max_retries": 2,
+      "backoff_seconds": 0.05,
+      "max_parse_failures": 2,
+      "approval_ttl_seconds": 900
+    },
+    "approval_method": "Independent test controller submits the predetermined approve/reject decision against the exact saved draft; the model cannot approve.",
+    "tools": "All three tools use the synthetic dataset; no external incident system is contacted.",
+    "cases": [
+      {
+        "case": "healthy",
+        "scenario": "healthy",
+        "passed": true,
+        "checks": {
+          "completed_with_auth_evidence": true,
+          "no_incident": true,
+          "requested_model_used": true
+        },
+        "session_id": "32830a54acf643448e65e38a7d4380b3",
+        "status": "COMPLETED",
+        "stop_reason": "goal_completed",
+        "steps": 2,
+        "tool_attempts": 1,
+        "elapsed_ms": 4360.0,
+        "incident_count": 0,
+        "approval_gate": null,
+        "final_answer": "Auth service is healthy. Status: HEALTHY, latency: 42 ms, last updated: 2026-11-12T09:00:00+08:00. No incident needed.",
+        "requests": [
+          {
+            "step": 1,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "7977e657-e8c0-471f-a72b-8faf4b43c8df",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 432,
+              "completion_tokens": 54,
+              "total_tokens": 486
+            },
+            "duration_ms": 3172.0
+          },
+          {
+            "step": 2,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "6635c039-cce1-4e82-a5cd-04bf4e0b86a5",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 573,
+              "completion_tokens": 83,
+              "total_tokens": 656
+            },
+            "duration_ms": 1156.0
+          }
+        ],
+        "trace": "examples/live-healthy.jsonl"
+      },
+      {
+        "case": "approved_incident",
+        "scenario": "incident",
+        "passed": true,
+        "checks": {
+          "paused_before_write": true,
+          "created_once_after_approval": true,
+          "runbook_evidence": true,
+          "confirmed_id_in_final": true,
+          "severity_matches_runbook": true,
+          "requested_model_used": true
+        },
+        "session_id": "bcfe2c87a20546b288eb8bbd1ef0cdc0",
+        "status": "COMPLETED",
+        "stop_reason": "goal_completed",
+        "steps": 4,
+        "tool_attempts": 3,
+        "elapsed_ms": 6203.0,
+        "incident_count": 1,
+        "approval_gate": {
+          "status": "AWAITING_APPROVAL",
+          "incident_count_before_decision": 0,
+          "creation_attempts_before_decision": 0,
+          "controller_decision": "approve"
+        },
+        "final_answer": "Payment service check complete. Status: DOWN, latency 2500 ms (last updated 2026-11-12T09:00:00+08:00). Per the payment outage runbook, a DOWN payment service is classified SEV1. Incident created: INC-B5995A45D5 (status CREATED, created at 2026-11-12T15:10:56 UTC). Title: \"Payment service outage (DOWN)\". Next step per runbook: verify dependency connectivity.",
+        "requests": [
+          {
+            "step": 1,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "025ab1e3-58af-455c-8e61-2e3a92c1c772",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 437,
+              "completion_tokens": 51,
+              "total_tokens": 488
+            },
+            "duration_ms": 1484.0
+          },
+          {
+            "step": 2,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "eca9ce82-492c-42de-991f-b1aff049893a",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 576,
+              "completion_tokens": 63,
+              "total_tokens": 639
+            },
+            "duration_ms": 1344.0
+          },
+          {
+            "step": 3,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "5b433bf2-272f-4fad-9ae7-6d94f601138f",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 886,
+              "completion_tokens": 122,
+              "total_tokens": 1008
+            },
+            "duration_ms": 1860.0
+          },
+          {
+            "step": 4,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "234d88b1-6011-40a0-a3a7-92c62f33183c",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 1136,
+              "completion_tokens": 145,
+              "total_tokens": 1281
+            },
+            "duration_ms": 1485.0
+          }
+        ],
+        "trace": "examples/live-approved_incident.jsonl"
+      },
+      {
+        "case": "rejected_incident",
+        "scenario": "incident",
+        "passed": true,
+        "checks": {
+          "paused_before_write": true,
+          "rejection_completed": true,
+          "no_incident": true,
+          "requested_model_used": true
+        },
+        "session_id": "2b3155268624414281d4ffa720844a02",
+        "status": "COMPLETED",
+        "stop_reason": "user_rejected",
+        "steps": 4,
+        "tool_attempts": 2,
+        "elapsed_ms": 5579.0,
+        "incident_count": 0,
+        "approval_gate": {
+          "status": "AWAITING_APPROVAL",
+          "incident_count_before_decision": 0,
+          "creation_attempts_before_decision": 0,
+          "controller_decision": "reject"
+        },
+        "final_answer": "Incident creation was cancelled \u2014 the approval request was rejected, so no incident was created.\n\nFindings:\n- Payment service status: DOWN\n- Latency: 2500 ms\n- Last updated: 2026-11-12T09:00:00+08:00\n\nPer the payment outage runbook, a payment DOWN condition maps to SEV1 and would normally be recorded as an incident. The proposed draft (SEV1, payment outage with the observed status and latency) was not approved, so no incident ID was issued. If you'd like to proceed, re-approve the incident creation or let me know how you'd like to adjust the draft.",
+        "requests": [
+          {
+            "step": 1,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "feffb6a7-7ab8-4ff7-9a22-ea41b101ed75",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 437,
+              "completion_tokens": 52,
+              "total_tokens": 489
+            },
+            "duration_ms": 985.0
+          },
+          {
+            "step": 2,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "019cd182-da6e-4497-b7d1-b70e48223e61",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 579,
+              "completion_tokens": 59,
+              "total_tokens": 638
+            },
+            "duration_ms": 1141.0
+          },
+          {
+            "step": 3,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "2405829e-957b-43d0-bc4c-9827f9da0cf8",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 928,
+              "completion_tokens": 117,
+              "total_tokens": 1045
+            },
+            "duration_ms": 1484.0
+          },
+          {
+            "step": 4,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "01069dee-9980-4d35-a10f-43fbfbd916c2",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 1164,
+              "completion_tokens": 181,
+              "total_tokens": 1345
+            },
+            "duration_ms": 1922.0
+          }
+        ],
+        "trace": "examples/live-rejected_incident.jsonl"
+      },
+      {
+        "case": "transient_retry",
+        "scenario": "retry",
+        "passed": true,
+        "checks": {
+          "completed_with_auth_evidence": true,
+          "no_incident": true,
+          "retry_observed": true,
+          "requested_model_used": true
+        },
+        "session_id": "b45a60937e224da7a53e209f637231c5",
+        "status": "COMPLETED",
+        "stop_reason": "goal_completed",
+        "steps": 2,
+        "tool_attempts": 2,
+        "elapsed_ms": 3046.0,
+        "incident_count": 0,
+        "approval_gate": null,
+        "final_answer": "Auth service is healthy: status HEALTHY, latency 42 ms, last updated 2026-11-12T09:00:00+08:00. No issues detected and no incident created.",
+        "requests": [
+          {
+            "step": 1,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "a1b8fee5-f2f9-4ad7-b4ad-1740a98456c4",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 432,
+              "completion_tokens": 54,
+              "total_tokens": 486
+            },
+            "duration_ms": 1515.0
+          },
+          {
+            "step": 2,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "072dcfdd-ad69-4b7a-bece-0751ca0dc49f",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 570,
+              "completion_tokens": 79,
+              "total_tokens": 649
+            },
+            "duration_ms": 1453.0
+          }
+        ],
+        "trace": "examples/live-transient_retry.jsonl"
+      },
+      {
+        "case": "persistent_tool_failure",
+        "scenario": "persistent_failure",
+        "passed": true,
+        "checks": {
+          "missing_evidence_fails": true,
+          "retries_exhausted": true,
+          "no_incident": true,
+          "requested_model_used": true
+        },
+        "session_id": "69a44e4448a9493898f6a45f49ae4ddc",
+        "status": "FAILED",
+        "stop_reason": "completion_evidence_missing",
+        "steps": 3,
+        "tool_attempts": 6,
+        "elapsed_ms": 4625.0,
+        "incident_count": 0,
+        "approval_gate": null,
+        "final_answer": "The task could not be completed with verified tool evidence. I was unable to check the auth service health. Two attempts to call get_service_status for \"auth\" both failed with a retryable ConnectionError (\"Injected transient tool connection error\"), returning no result data. No health evidence is available, so I cannot confirm whether the auth service is healthy or degraded. Please retry the check later or investigate the tool connectivity issue.",
+        "requests": [
+          {
+            "step": 1,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "c72438ef-3d5e-45ae-8ffa-ec4d502b3603",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 432,
+              "completion_tokens": 54,
+              "total_tokens": 486
+            },
+            "duration_ms": 1438.0
+          },
+          {
+            "step": 2,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "7f9d4c62-5527-484d-981e-89f82c575068",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 552,
+              "completion_tokens": 50,
+              "total_tokens": 602
+            },
+            "duration_ms": 1235.0
+          },
+          {
+            "step": 3,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "7a5069fa-c93f-49f1-9c6f-96fae0337463",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 675,
+              "completion_tokens": 116,
+              "total_tokens": 791
+            },
+            "duration_ms": 1563.0
+          }
+        ],
+        "trace": "examples/live-persistent_tool_failure.jsonl"
+      },
+      {
+        "case": "step_limit",
+        "scenario": "incident",
+        "passed": true,
+        "checks": {
+          "stopped_at_one_request": true,
+          "no_incident": true,
+          "requested_model_used": true
+        },
+        "session_id": "b28b1410227f4cf3a6159a51ac1f21cb",
+        "status": "LIMIT_EXCEEDED",
+        "stop_reason": "step_limit",
+        "steps": 1,
+        "tool_attempts": 1,
+        "elapsed_ms": 1125.0,
+        "incident_count": 0,
+        "approval_gate": null,
+        "final_answer": "Execution stopped: step_limit.",
+        "requests": [
+          {
+            "step": 1,
+            "status": "received",
+            "response_model": "deepseek-flash",
+            "request_id": "a215f5d6-174b-43ac-bec5-8c50e2960dd4",
+            "finish_reason": "stop",
+            "usage": {
+              "prompt_tokens": 437,
+              "completion_tokens": 51,
+              "total_tokens": 488
+            },
+            "duration_ms": 1109.0
+          }
+        ],
+        "trace": "examples/live-step_limit.jsonl"
+      }
+    ],
+    "finished_at": "2026-11-12T15:11:12.122710+00:00",
+    "elapsed_seconds": 24.984,
+    "passed": 6,
+    "total": 6,
+    "status": "passed",
+    "model_requests": 16,
+    "response_models": [
+      "deepseek-flash"
+    ],
+    "usage": {
+      "prompt_tokens": 10246,
+      "completion_tokens": 1331,
+      "total_tokens": 11577
+    },
+    "credential_scan": {
+      "passed": true,
+      "files_scanned": 71,
+      "archive_entries_scanned": 74
+    }
+  },
+  "credential_scan": {
+    "checked_at": "2026-11-12T15:18:23.912679+00:00",
+    "passed": true,
+    "files_scanned": 75,
+    "archive_entries_scanned": 85
   },
   "public_repository": "https://github.com/wizounovziki/agent-harness-assessment",
   "public_dataset_url": "https://github.com/wizounovziki/agent-harness-assessment/tree/main/data",

@@ -105,7 +105,7 @@ def main():
         }
     live_path = root / "runtime" / "live-model-smoke.json"
     live = (
-        json.loads(live_path.read_text())
+        json.loads(live_path.read_text(encoding="utf-8"))
         if live_path.exists()
         else {"executed": False, "status": "requires local credentials and model selection"}
     )
@@ -142,6 +142,11 @@ def main():
         "clean_install": clean,
         "examples": records,
         "live_model": live,
+        "credential_scan": json.loads(
+            (root / "docs/credential-scan.json").read_text(encoding="utf-8")
+        )
+        if (root / "docs/credential-scan.json").exists()
+        else {"executed": False},
         "public_repository": publication.get("repository_url"),
         "public_dataset_url": publication.get("dataset_url"),
         "publication_status": publication.get("status", "unpublished"),

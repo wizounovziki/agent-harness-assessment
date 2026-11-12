@@ -7,7 +7,7 @@ The user supplied `agent_harness_ai.md` as the implementation reference. Its tec
 | Python layout, FastAPI and Pydantic | Adopted. The earlier TypeScript concept is superseded for implementation. |
 | Named tool inputs and outputs | Field names, severity values, service status enum and boundary validation are retained; nested document hits are typed more precisely. |
 | `LLMAction` and `thought` | Retained. `thought` is a short decision summary; cross-field validators reject incoherent decisions. |
-| Injected provider and scripted model | `LLMProvider`, `ScriptedMockLLM`, and the real async SDK adapter are separate from the loop. |
+| Injected provider and scripted model | `LLMProvider`, `ScriptedMockLLM`, and the real async SDK adapter are separate from the loop. DeepSeek `deepseek-flash` uses a provider-specific JSON request profile and passed six live cases. |
 | Approval callback or API suspension | Both implemented. API approval is persisted and resumed; CLI injects a typed callback. |
 | Max steps 8 and active seconds 30 | Adopted; a separate tool-attempt budget protects repeated retries. |
 | Rejected approval returned to the model | Adopted. No creation tool call occurs; the model receives `BLOCKED_BY_USER` and concludes. |

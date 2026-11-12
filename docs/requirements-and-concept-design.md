@@ -267,7 +267,7 @@ Postman 集合覆盖：健康检查、服务健康、异常待审批、批准后
 
 ## 13. 后续设计确认点
 
-- 模型响应契约、状态转换、审批恢复及官方 SDK 离线协议校验已实现；真实模型调用按用户本次要求暂缓。
+- 模型响应契约、状态转换、审批恢复及官方 SDK 离线协议校验已实现；DeepSeek deepseek-flash 的 6 个真实模型场景全部达到预期，16 次调用共使用 11,577 tokens。
 - 英文展示图、SEV 场景规则和确定性数据集已交付。
-- GitHub 已发布至 wizounovziki/agent-harness-assessment，数据集随代码交付；匿名文件与源码 ZIP 下载、公开检出后 57 个测试均已通过。
+- GitHub 已发布至 wizounovziki/agent-harness-assessment，数据集随代码交付；匿名文件与源码 ZIP 下载、公开源码重新安装后 61 个测试均已通过。
 - 验收与未完成外部事项见 [TODO](./TODO.md) 和 [提交清单](./submission-checklist.md)。
