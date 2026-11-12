@@ -1,0 +1,62 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "preflight_id": {
+      "title": "Preflight Id",
+      "type": "string"
+    },
+    "configuration_checksum": {
+      "title": "Configuration Checksum",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "READY",
+        "BLOCKED"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "checks": {
+      "additionalProperties": {
+        "type": "boolean"
+      },
+      "title": "Checks",
+      "type": "object"
+    },
+    "available": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Available",
+      "type": "object"
+    },
+    "required_extra": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Required Extra",
+      "type": "object"
+    },
+    "source_revision": {
+      "title": "Source Revision",
+      "type": "integer"
+    },
+    "expires_at": {
+      "title": "Expires At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "preflight_id",
+    "configuration_checksum",
+    "status",
+    "checks",
+    "available",
+    "required_extra",
+    "source_revision",
+    "expires_at"
+  ],
+  "title": "ReadinessOutput",
+  "type": "object"
+}

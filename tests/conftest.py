@@ -36,6 +36,7 @@ def make_case(tmp_path):
         provider=None,
         objective=None,
         scenario_override=None,
+        owner_id="local-user",
     ):
         directory = tmp_path / str(len(stores))
         store = SQLiteStore(directory / "state.sqlite3")
@@ -49,7 +50,10 @@ def make_case(tmp_path):
         tracer = Tracer(store, directory / "traces")
         harness = AgentHarness(llm, ToolRegistry(tools), store, tracer, callback)
         state = harness.new_state(
-            objective or spec["objective"], scenario_id=scenario, limits=limits or ExecutionLimits()
+            objective or spec["objective"],
+            scenario_id=scenario,
+            limits=limits or ExecutionLimits(),
+            owner_id=owner_id,
         )
         return RunCase(harness, state, store, tools, llm, directory / "traces")
 

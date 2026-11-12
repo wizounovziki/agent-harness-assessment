@@ -19,7 +19,7 @@
 
 ## C. 数据与 Mock Tools
 
-- [x] 提供 3 个服务、4 份合成文档和 13 个确定性场景。
+- [x] 提供 3 个服务、4 份合成文档和 21 个确定性场景。
 - [x] 实现知识库查询、服务状态查询和模拟事件创建。
 - [x] 覆盖暂时/持续失败、实际延迟、错误输出、格式错误、循环和不可信文档。
 - [x] 实现稳定幂等键、提交后响应丢失与核对失败场景。
@@ -45,11 +45,11 @@
 
 ## F. 验证
 
-- [x] 61 个自动化测试通过，覆盖规范要求的 6 个核心案例、DeepSeek 协议与额外边界。
+- [x] 96 个自动化测试通过，覆盖规范要求的 6 个核心案例、DeepSeek 协议与额外边界。
 - [x] 验证 CLI 入口、API、越权、取消、真实应用重启、日志重建与敏感字段脱敏。
 - [x] 使用官方 SDK 与模拟 HTTP 传输验证真实适配器协议和重试配置。
-- [x] 实际运行 Postman 集合：27 次请求、46 项断言全部成功。
-- [x] 从源代码压缩包重新安装，61 个测试再次全部通过。
+- [x] 实际运行 Postman 集合：49 次请求、86 项断言全部成功。
+- [x] 从源代码压缩包重新安装，96 个测试再次全部通过。
 - [x] 静态检查、格式检查、源代码指纹与压缩包校验。
 
 - [x] 使用真实 DeepSeek deepseek-flash 完成 6 个场景，16 次模型调用，全部达到预期。
@@ -71,6 +71,17 @@
 - [x] 按用户最新要求，将小型 Mock Dataset 随代码放入同一仓库的 data/。
 - [x] 发布完整项目到 main，并核对远端文件树与本地验证版本一致。
 - [x] 匿名读取十二个交付文件和完整源码 ZIP，验证代码与数据公开可访问。
-- [x] 从公开源码下载重新安装，61 个测试全部通过；验证信息写入提交清单。
+- [x] 从公开源码下载重新安装，96 个测试全部通过；验证信息写入提交清单。
 
 真实模型验证结果见 [DeepSeek 实测记录](./live-model-results.json)。公开交付位置为上述 GitHub 仓库及 data/ 目录。最新证据见 [验证结果](./validation-results.json) 和 [提交清单](./submission-checklist.md)。
+
+## Controlled service changes / 受控服务变更
+
+- [x] Resource/environment/permission preflight and write-time rechecks.
+- [x] Sealed service snapshots and exact-target approved rollback.
+- [x] Initial failure compensation, later rollback approval, and NEEDS_REVIEW for failed recovery.
+- [x] Trace/span/actor/version/approval links and transactional audit hash chain.
+- [x] Four additional live deepseek-flash workflows passed (18 requests, 60,712 tokens).
+- [x] Updated high-level concept, layered architecture, workflow and implementation report.
+
+See [operations-safety.md](./operations-safety.md) and [live-change-results.json](./live-change-results.json).

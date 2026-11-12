@@ -9,16 +9,16 @@ import uvicorn
 
 from src.config import Settings
 from src.errors import HarnessError
-from src.schemas import AgentStatus, CreateIncidentInput
+from src.schemas import AgentStatus, Contract
 from src.service import RunManager
 
 
-async def interactive_approval(draft: CreateIncidentInput) -> bool:
-    print("\nApproval requested for this exact incident:")
+async def interactive_approval(draft: Contract) -> bool:
+    print("\nApproval requested for this exact operation:")
     print(draft.model_dump_json(indent=2))
     try:
         answer = await asyncio.to_thread(
-            input, 'Type "approve" to create it; any other response rejects: '
+            input, 'Type "approve" to execute it; any other response rejects: '
         )
     except EOFError:
         return False

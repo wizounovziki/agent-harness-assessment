@@ -372,5 +372,502 @@
         "latency_ms": 850
       }
     }
+  },
+  "deploy_success": {
+    "objective": "Deploy auth in staging, verify health and report the change ID.",
+    "description": "Preflight -> sealed snapshot -> approval -> deploy -> verify.",
+    "responses": [
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "check_change_readiness",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          }
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "capture_change_snapshot",
+        "tool_args": {
+          "preflight_id": "{{preflight_id}}"
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "execute_service_change",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          },
+          "preflight_id": "{{preflight_id}}",
+          "snapshot_id": "{{snapshot_id}}",
+          "rollback_on_failure": true
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "verify_service_change",
+        "tool_args": {
+          "change_id": "{{change_id}}"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Deployment {{change_id}} is verified healthy."
+      }
+    ]
+  },
+  "deploy_capacity_blocked": {
+    "objective": "Deploy auth in production if capacity permits.",
+    "description": "Insufficient rollout capacity blocks deployment.",
+    "responses": [
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "check_change_readiness",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "production",
+            "operation": "deploy",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 1000,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          }
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Deployment blocked by resource preflight; no change applied."
+      }
+    ]
+  },
+  "deploy_rollback": {
+    "objective": "Deploy auth in staging with rollback on failed health checks.",
+    "description": "Immediate unhealthy rollout is restored under approved compensation scope.",
+    "responses": [
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "check_change_readiness",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          }
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "capture_change_snapshot",
+        "tool_args": {
+          "preflight_id": "{{preflight_id}}"
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "execute_service_change",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          },
+          "preflight_id": "{{preflight_id}}",
+          "snapshot_id": "{{snapshot_id}}",
+          "rollback_on_failure": true
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Change {{change_id}} failed health verification and was rolled back."
+      }
+    ]
+  },
+  "deploy_late_failure": {
+    "objective": "Deploy auth, verify health, and roll back if a later check fails.",
+    "description": "Later failure requires separate rollback approval and a new safety snapshot.",
+    "responses": [
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "check_change_readiness",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          }
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "capture_change_snapshot",
+        "tool_args": {
+          "preflight_id": "{{preflight_id}}"
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "execute_service_change",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          },
+          "preflight_id": "{{preflight_id}}",
+          "snapshot_id": "{{snapshot_id}}",
+          "rollback_on_failure": true
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "verify_service_change",
+        "tool_args": {
+          "change_id": "{{change_id}}"
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "rollback_service_change",
+        "tool_args": {
+          "change_id": "{{change_id}}",
+          "reason": "Post-deployment health verification failed.",
+          "snapshot_id": "{{snapshot_id}}",
+          "expected_revision": "{{revision}}",
+          "service_name": "auth",
+          "environment": "staging",
+          "restore": "{{snapshot_manifest}}"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Change {{change_id}} was rolled back after the failed verification."
+      }
+    ],
+    "late_health_failure": true
+  },
+  "deploy_rollback_failure": {
+    "objective": "Deploy auth with recovery if health checks fail.",
+    "description": "Unhealthy rollback halts in NEEDS_REVIEW.",
+    "responses": [
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "check_change_readiness",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          }
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "capture_change_snapshot",
+        "tool_args": {
+          "preflight_id": "{{preflight_id}}"
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "execute_service_change",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          },
+          "preflight_id": "{{preflight_id}}",
+          "snapshot_id": "{{snapshot_id}}",
+          "rollback_on_failure": true
+        }
+      }
+    ],
+    "rollback_unhealthy": true
+  },
+  "decommission": {
+    "objective": "Decommission auth in staging and verify it is offline.",
+    "description": "Snapshot and approval protect service removal.",
+    "responses": [
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "check_change_readiness",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "decommission",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 0,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 0
+          }
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "capture_change_snapshot",
+        "tool_args": {
+          "preflight_id": "{{preflight_id}}"
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "execute_service_change",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "decommission",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 0,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 0
+          },
+          "preflight_id": "{{preflight_id}}",
+          "snapshot_id": "{{snapshot_id}}",
+          "rollback_on_failure": true
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "verify_service_change",
+        "tool_args": {
+          "change_id": "{{change_id}}"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Change {{change_id}} decommissioned auth; zero replicas verified."
+      }
+    ]
+  },
+  "deploy_response_loss": {
+    "objective": "Deploy auth and verify its health.",
+    "description": "Reconcile a committed deployment after response loss.",
+    "responses": [
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "check_change_readiness",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          }
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "capture_change_snapshot",
+        "tool_args": {
+          "preflight_id": "{{preflight_id}}"
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "execute_service_change",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          },
+          "preflight_id": "{{preflight_id}}",
+          "snapshot_id": "{{snapshot_id}}",
+          "rollback_on_failure": true
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "verify_service_change",
+        "tool_args": {
+          "change_id": "{{change_id}}"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Deployment {{change_id}} is verified healthy."
+      }
+    ],
+    "faults": {
+      "execute_service_change": [
+        "commit_then_timeout"
+      ]
+    }
+  },
+  "deploy_unknown_write": {
+    "objective": "Deploy auth and verify its health.",
+    "description": "Lost deployment result with unavailable reconciliation requires review.",
+    "responses": [
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "check_change_readiness",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          }
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "capture_change_snapshot",
+        "tool_args": {
+          "preflight_id": "{{preflight_id}}"
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "execute_service_change",
+        "tool_args": {
+          "plan": {
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "surge_replicas": 1
+          },
+          "preflight_id": "{{preflight_id}}",
+          "snapshot_id": "{{snapshot_id}}",
+          "rollback_on_failure": true
+        }
+      },
+      {
+        "thought": "Evaluate the change-control evidence and follow the approved operation policy.",
+        "action_type": "CALL_TOOL",
+        "tool_name": "verify_service_change",
+        "tool_args": {
+          "change_id": "{{change_id}}"
+        }
+      },
+      {
+        "thought": "Summarize the verified tool observations.",
+        "action_type": "FINAL_ANSWER",
+        "final_answer": "Deployment {{change_id}} is verified healthy."
+      }
+    ],
+    "faults": {
+      "execute_service_change": [
+        "commit_then_timeout"
+      ]
+    },
+    "lookup_unavailable": true
   }
 }

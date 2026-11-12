@@ -1,12 +1,12 @@
 # Operations Agent Harness
 
-A runnable operations assistant with validated mock tools, persistent human approval, bounded model/tool execution, SQLite history, and JSONL traces.
+A runnable operations assistant for incident response and controlled service changes, with resource preflight, restorable snapshots, exact approval, rollback, persistent audit and bounded execution.
 
 [GitHub repository](https://github.com/wizounovziki/agent-harness-assessment) · [Mock dataset](https://github.com/wizounovziki/agent-harness-assessment/tree/main/data)
 
 The implementation follows the supplied Python framework specification: Python 3.12, FastAPI, Pydantic, an injected model provider, and an injected approval callback. Pi informed the module boundaries. The control loop is implemented in this repository.
 
-![Layered architecture](docs/images/operations-layered-architecture-en-v2.png)
+![Layered architecture](docs/images/operations-layered-architecture-en-v3.png)
 
 ## Quick start
 
@@ -67,6 +67,7 @@ All business endpoints require `Authorization: Bearer local-demo-token` by defau
 | `POST /runs/{id}/cancel` | `{ "reason": "Stop this run" }` |
 | `GET /runs/{id}/events?after=0` | Ordered, redacted event history |
 | `GET /runs/{id}/incidents` | Actual mock incident records |
+| `GET /runs/{id}/changes` | Service changes, snapshots and linked business audit |
 | `GET /runs/{id}/trace.jsonl` | Download the trace reconstructed from SQLite |
 
 Example in PowerShell:
@@ -83,6 +84,20 @@ Invoke-RestMethod "http://127.0.0.1:8000/runs/$($run.session_id)/approvals/$($pe
 ```
 
 Repeated identical decisions are idempotent. A conflicting decision or hash returns 409. Unknown or foreign runs return 404. Invalid inputs return 422. Bodies above 64 KiB return 413.
+
+## Controlled service changes
+
+The original three tools are joined by five change tools: readiness, snapshot, execution, verification and rollback. The server enforces preflight, snapshot integrity and exact approval before applying deployments, updates or decommissioning. It rechecks capacity, permissions and the current revision after approval. Immediate recovery uses an explicitly approved scope; later recovery requires separate approval and a snapshot of the state being reverted.
+
+```powershell
+uv run python main.py run "Deploy auth in staging and verify health." --scenario deploy_success
+uv run python main.py run "Deploy auth with recovery." --scenario deploy_rollback
+uv run python main.py run "Deploy auth and recover from a later failure." --scenario deploy_late_failure
+```
+
+CLI/API approvals display the concrete plan, immutable artifact digest, snapshot and recovery policy. In real mode include the desired registered target plan in the goal. All infrastructure is mocked. See [updated business architecture](docs/business-architecture-and-workflow-en.md) and [operations safety design](docs/operations-safety.md).
+
+Current verification: **96 automated tests**, **49 Postman requests / 86 assertions**, plus **4 live change workflows using deepseek-flash** (18 requests, 60,712 tokens). [Live change evidence](docs/live-change-results.json). Original six live incident cases remain recorded separately. Repeat the paid change evaluation with `uv run python -m scripts.live_change_evaluation`.
 
 ## Model modes
 

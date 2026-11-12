@@ -10,7 +10,19 @@ from typing import Any
 
 from pydantic import BaseModel, ValidationError
 
+from src.change_schemas import (
+    ChangeOutput,
+    ChangeReference,
+    DeploymentCatalog,
+    ExecuteChangeInput,
+    ReadinessInput,
+    ReadinessOutput,
+    RollbackInput,
+    SnapshotInput,
+    SnapshotOutput,
+)
 from src.errors import ToolError, UnknownServiceError, UnknownToolError
+from src.operations import ChangeControl
 from src.schemas import (
     AgentState,
     Contract,
@@ -32,6 +44,9 @@ class ToolOutputError(ToolError):
 class Dataset:
     def __init__(self, directory: Path):
         self.directory = directory
+        self.deployments = DeploymentCatalog.model_validate_json(
+            (directory / "mock_deployments.json").read_text(encoding="utf-8")
+        )
         self.documents = json.loads((directory / "mock_kb_docs.json").read_text(encoding="utf-8"))
         service_data = json.loads((directory / "mock_services.json").read_text(encoding="utf-8"))
         self.services = {
@@ -83,6 +98,7 @@ class MockTools:
         self.store = store
         self.dataset = dataset
         self.scenario = scenario
+        self.operations = ChangeControl(store, dataset.deployments)
 
     async def _fault(self, name: str, context: ToolContext) -> str:
         attempt = self.store.next_tool_attempt(context.state.session_id, name)
@@ -143,12 +159,62 @@ class MockTools:
             raise ConnectionError("Injected reconciliation outage")
         return self.store.lookup_incident(key)
 
+    @validated_tool(ReadinessInput, ReadinessOutput)
+    async def check_change_readiness(self, args, context):
+        await self._fault("check_change_readiness", context)
+        return self.operations.preflight(args, context)
+
+    @validated_tool(SnapshotInput, SnapshotOutput)
+    async def capture_change_snapshot(self, args, context):
+        await self._fault("capture_change_snapshot", context)
+        return self.operations.snapshot(args, context)
+
+    @validated_tool(ExecuteChangeInput, ChangeOutput)
+    async def execute_service_change(self, args, context):
+        fault = await self._fault("execute_service_change", context)
+        result = self.operations.execute(
+            args, context, rollback_unhealthy=self.scenario.get("rollback_unhealthy", False)
+        )
+        if fault == "commit_then_timeout":
+            raise TimeoutError("Injected response loss after committed service change")
+        return result | {"status": "INVALID"} if fault == "invalid_output" else result
+
+    @validated_tool(ChangeReference, ChangeOutput)
+    async def verify_service_change(self, args, context):
+        await self._fault("verify_service_change", context)
+        return self.operations.verify(
+            args, context, late_failure=self.scenario.get("late_health_failure", False)
+        )
+
+    @validated_tool(RollbackInput, ChangeOutput)
+    async def rollback_service_change(self, args, context):
+        fault = await self._fault("rollback_service_change", context)
+        result = self.operations.rollback(
+            args, context, unhealthy=self.scenario.get("rollback_unhealthy", False)
+        )
+        if fault == "commit_then_timeout":
+            raise TimeoutError("Injected response loss after committed rollback")
+        return result
+
+    def lookup_write(self, name: str, key: str, session_id: str):
+        if name == "create_incident":
+            return self.lookup_incident(key)
+        if self.scenario.get("lookup_unavailable"):
+            raise ConnectionError("Injected reconciliation outage")
+        return self.operations.lookup(key, session_id)
+
 
 class ToolRegistry:
+    APPROVAL_TOOLS = {"create_incident", "execute_service_change", "rollback_service_change"}
     INPUTS: dict[str, type[Contract]] = {
         "search_knowledge_base": SearchKBInput,
         "get_service_status": ServiceStatusInput,
         "create_incident": CreateIncidentInput,
+        "check_change_readiness": ReadinessInput,
+        "capture_change_snapshot": SnapshotInput,
+        "execute_service_change": ExecuteChangeInput,
+        "verify_service_change": ChangeReference,
+        "rollback_service_change": RollbackInput,
     }
 
     def __init__(self, tools: MockTools):

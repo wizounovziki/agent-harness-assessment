@@ -1,0 +1,1145 @@
+{
+  "executed": true,
+  "started_at": "2026-11-12T15:58:59.490334+00:00",
+  "model": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "request_settings": {
+    "thinking": "disabled",
+    "temperature": 0,
+    "max_tokens": 2048,
+    "response_format": "json_object"
+  },
+  "approval_method": "Independent test controller approves exact mock change proposals; no live infrastructure is contacted.",
+  "cases": [
+    {
+      "case": "deploy_success",
+      "passed": true,
+      "checks": {
+        "expected_status": true,
+        "approval_count": true,
+        "no_change_before_first_approval": true,
+        "one_confirmed_change": true,
+        "snapshot_before_write": true,
+        "verified_outcome": true,
+        "expected_change_status": true,
+        "model_confirmed": true
+      },
+      "status": "COMPLETED",
+      "stop_reason": "goal_completed",
+      "session_id": "4770c2c785cc4a64ba1d255de83797be",
+      "steps": 5,
+      "tool_attempts": 4,
+      "elapsed_seconds": 7.906,
+      "approvals": [
+        {
+          "tool": "execute_service_change",
+          "changes_before_decision": 0,
+          "action_id": "4770c2c785cc4a64ba1d255de83797be:9ca207035db76192c28246581321bb2699276ace0b2a0aa209e2330b3aba6a7a",
+          "decision": "approve"
+        }
+      ],
+      "changes": [
+        {
+          "change_id": "chg-pre-338eb8dfec327ee3d75e1848",
+          "snapshot_id": "snap-pre-338eb8dfec327ee3d75e1848",
+          "plan": {
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "status": "APPLIED",
+          "revision": 2,
+          "health": "HEALTHY",
+          "rollback_snapshot_id": null,
+          "verified": true,
+          "owner_id": "live-evaluation-controller"
+        }
+      ],
+      "audit": [
+        {
+          "event": "preflight_completed",
+          "timestamp": "2026-11-12T15:59:02.073052+00:00",
+          "trace_id": "4770c2c785cc4a64ba1d255de83797be",
+          "span_id": "338eb8dfec327ee3",
+          "parent_span_id": "4770c2c785cc4a64",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "348bc96615c84bb1baadafc304d0d568",
+          "preflight_id": "pre-338eb8dfec327ee3d75e1848",
+          "plan": {
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "result": {
+            "preflight_id": "pre-338eb8dfec327ee3d75e1848",
+            "status": "READY",
+            "checks": {
+              "operator_authorized": true,
+              "cluster_ready": true,
+              "dependencies_ready": true,
+              "artifact_available_and_verified": true,
+              "rollback_artifact_retained": true,
+              "configuration_registered": true,
+              "cpu_capacity": true,
+              "memory_capacity": true,
+              "snapshot_capacity": true
+            },
+            "available": {
+              "cpu_millis": 7000,
+              "memory_mb": 15360,
+              "snapshot_slots": 100
+            },
+            "required_extra": {
+              "cpu_millis": 500,
+              "memory_mb": 512,
+              "snapshot_slots": 2
+            },
+            "source_revision": 1,
+            "expires_at": "2026-11-12T16:04:02.073052+00:00"
+          },
+          "sequence": 1,
+          "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "entry_hash": "d33226c2da849d578f8f0b491a91e1ee8d3fc87c0b6d5e457012b0af3f22614a"
+        },
+        {
+          "event": "preflight_revalidated",
+          "timestamp": "2026-11-12T15:59:03.023782+00:00",
+          "trace_id": "4770c2c785cc4a64ba1d255de83797be",
+          "span_id": "40ce1937fb3341b3",
+          "parent_span_id": "4770c2c785cc4a64",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "e3cad2d45f604f55b936e4dea8305f94",
+          "preflight_id": "pre-338eb8dfec327ee3d75e1848",
+          "checks": {
+            "operator_authorized": true,
+            "cluster_ready": true,
+            "dependencies_ready": true,
+            "artifact_available_and_verified": true,
+            "rollback_artifact_retained": true,
+            "configuration_registered": true,
+            "cpu_capacity": true,
+            "memory_capacity": true,
+            "snapshot_capacity": true
+          },
+          "available": {
+            "cpu_millis": 7000,
+            "memory_mb": 15360,
+            "snapshot_slots": 100
+          },
+          "required_extra": {
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "snapshot_slots": 2
+          },
+          "revision": 1,
+          "sequence": 2,
+          "previous_hash": "d33226c2da849d578f8f0b491a91e1ee8d3fc87c0b6d5e457012b0af3f22614a",
+          "entry_hash": "f2900123be9ea92f7dc68138fd9227d1486c1bbcc6001e3145ff712d5a2803f5"
+        },
+        {
+          "event": "snapshot_captured",
+          "timestamp": "2026-11-12T15:59:03.023782+00:00",
+          "trace_id": "4770c2c785cc4a64ba1d255de83797be",
+          "span_id": "40ce1937fb3341b3",
+          "parent_span_id": "4770c2c785cc4a64",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "e3cad2d45f604f55b936e4dea8305f94",
+          "snapshot_id": "snap-pre-338eb8dfec327ee3d75e1848",
+          "checksum": "320bc040240fd650920c17d3aa30292547f2a95e8143dd5d4a145b9bbd358052",
+          "source_revision": 1,
+          "sequence": 3,
+          "previous_hash": "f2900123be9ea92f7dc68138fd9227d1486c1bbcc6001e3145ff712d5a2803f5",
+          "entry_hash": "c3a2e789a71170f199b82d95390786444e241f4ec94a081cc304bd7ada327257"
+        },
+        {
+          "event": "preflight_revalidated",
+          "timestamp": "2026-11-12T15:59:04.634100+00:00",
+          "trace_id": "4770c2c785cc4a64ba1d255de83797be",
+          "span_id": "7fa1ecca1ed68b77",
+          "parent_span_id": "4770c2c785cc4a64",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "4770c2c785cc4a64ba1d255de83797be:9ca207035db76192c28246581321bb2699276ace0b2a0aa209e2330b3aba6a7a",
+          "preflight_id": "pre-338eb8dfec327ee3d75e1848",
+          "checks": {
+            "operator_authorized": true,
+            "cluster_ready": true,
+            "dependencies_ready": true,
+            "artifact_available_and_verified": true,
+            "rollback_artifact_retained": true,
+            "configuration_registered": true,
+            "cpu_capacity": true,
+            "memory_capacity": true,
+            "snapshot_capacity": true
+          },
+          "available": {
+            "cpu_millis": 7000,
+            "memory_mb": 15360,
+            "snapshot_slots": 99
+          },
+          "required_extra": {
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "snapshot_slots": 1
+          },
+          "revision": 1,
+          "sequence": 4,
+          "previous_hash": "c3a2e789a71170f199b82d95390786444e241f4ec94a081cc304bd7ada327257",
+          "entry_hash": "ae21c9f65ffb2769438ba52977be0a06647d5cd052e16cc98df225c7f6262e89"
+        },
+        {
+          "event": "change_applied",
+          "timestamp": "2026-11-12T15:59:04.635101+00:00",
+          "trace_id": "4770c2c785cc4a64ba1d255de83797be",
+          "span_id": "7fa1ecca1ed68b77",
+          "parent_span_id": "4770c2c785cc4a64",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "4770c2c785cc4a64ba1d255de83797be:9ca207035db76192c28246581321bb2699276ace0b2a0aa209e2330b3aba6a7a",
+          "change_id": "chg-pre-338eb8dfec327ee3d75e1848",
+          "snapshot_id": "snap-pre-338eb8dfec327ee3d75e1848",
+          "parameters_hash": "9ca207035db76192c28246581321bb2699276ace0b2a0aa209e2330b3aba6a7a",
+          "approval_id": "8de05dec24a74991bab11eca9c786190",
+          "before_revision": 1,
+          "after_revision": 2,
+          "plan": {
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "rollback_on_failure": true,
+          "sequence": 5,
+          "previous_hash": "ae21c9f65ffb2769438ba52977be0a06647d5cd052e16cc98df225c7f6262e89",
+          "entry_hash": "70f86669f65cd72c441613db8793610ed7c73c51b07bdac0cc9233b545d96c38"
+        },
+        {
+          "event": "change_verified",
+          "timestamp": "2026-11-12T15:59:05.848884+00:00",
+          "trace_id": "4770c2c785cc4a64ba1d255de83797be",
+          "span_id": "8d34488a681112c1",
+          "parent_span_id": "4770c2c785cc4a64",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "8f027c9474474fdabe0c3e960495494b",
+          "change_id": "chg-pre-338eb8dfec327ee3d75e1848",
+          "snapshot_id": "snap-pre-338eb8dfec327ee3d75e1848",
+          "health": "HEALTHY",
+          "revision": 2,
+          "sequence": 6,
+          "previous_hash": "70f86669f65cd72c441613db8793610ed7c73c51b07bdac0cc9233b545d96c38",
+          "entry_hash": "25ed7c731d1a10a502721af023c990c63f63d182cd687423aa10cf133182cdef"
+        }
+      ],
+      "requests": [
+        {
+          "step": 1,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "f76fd4a6-05cb-4e9b-80a6-f8a52d31802a",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 2550,
+            "completion_tokens": 143,
+            "total_tokens": 2693
+          },
+          "duration_ms": 2562.0
+        },
+        {
+          "step": 2,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "d1c6a6a2-d627-495d-a13e-962db3dec28f",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 2917,
+            "completion_tokens": 60,
+            "total_tokens": 2977
+          },
+          "duration_ms": 938.0
+        },
+        {
+          "step": 3,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "6cac61f1-4199-4d31-8943-ac1014441349",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 3257,
+            "completion_tokens": 183,
+            "total_tokens": 3440
+          },
+          "duration_ms": 1594.0
+        },
+        {
+          "step": 4,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "20086e73-e3fa-444f-92e0-8034df07399d",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 3602,
+            "completion_tokens": 56,
+            "total_tokens": 3658
+          },
+          "duration_ms": 1203.0
+        },
+        {
+          "step": 5,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "1b18c490-0496-4019-9d66-b87adf88a660",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 3784,
+            "completion_tokens": 101,
+            "total_tokens": 3885
+          },
+          "duration_ms": 1532.0
+        }
+      ],
+      "final_answer": "Deployment of auth to staging completed successfully. Preflight was READY, snapshot snap-pre-338eb8dfec327ee3d75e1848 was captured, and the change was applied and verified HEALTHY at revision 2. Confirmed change ID: chg-pre-338eb8dfec327ee3d75e1848.",
+      "trace": "examples/live-deploy_success.jsonl"
+    },
+    {
+      "case": "deploy_capacity_blocked",
+      "passed": true,
+      "checks": {
+        "expected_status": true,
+        "approval_count": true,
+        "no_change_before_first_approval": true,
+        "no_changes": true,
+        "resource_check_blocked": true,
+        "model_confirmed": true
+      },
+      "status": "FAILED",
+      "stop_reason": "completion_evidence_missing",
+      "session_id": "6fe947e0d59a4bb3b0e1f444601207fc",
+      "steps": 2,
+      "tool_attempts": 1,
+      "elapsed_seconds": 3.906,
+      "approvals": [],
+      "changes": [],
+      "audit": [
+        {
+          "event": "preflight_completed",
+          "timestamp": "2026-11-12T15:59:08.767140+00:00",
+          "trace_id": "6fe947e0d59a4bb3b0e1f444601207fc",
+          "span_id": "2e03a1ad32d66d8d",
+          "parent_span_id": "6fe947e0d59a4bb3",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "e178b55c119b468f9defef04543b40b0",
+          "preflight_id": "pre-2e03a1ad32d66d8da943541b",
+          "plan": {
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 1000,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "production",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "result": {
+            "preflight_id": "pre-2e03a1ad32d66d8da943541b",
+            "status": "BLOCKED",
+            "checks": {
+              "operator_authorized": true,
+              "cluster_ready": true,
+              "dependencies_ready": true,
+              "artifact_available_and_verified": true,
+              "rollback_artifact_retained": true,
+              "configuration_registered": true,
+              "cpu_capacity": false,
+              "memory_capacity": true,
+              "snapshot_capacity": true
+            },
+            "available": {
+              "cpu_millis": 500,
+              "memory_mb": 15360,
+              "snapshot_slots": 100
+            },
+            "required_extra": {
+              "cpu_millis": 1500,
+              "memory_mb": 512,
+              "snapshot_slots": 2
+            },
+            "source_revision": 1,
+            "expires_at": "2026-11-12T16:04:08.767140+00:00"
+          },
+          "sequence": 7,
+          "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "entry_hash": "f0d866767aaa244d54628f554c1369bea815bdd4c0cf42da27b21e7f3ce6c0ab"
+        }
+      ],
+      "requests": [
+        {
+          "step": 1,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "4c7e17a6-446f-4ff7-a21a-4dd89baa3420",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 2545,
+            "completion_tokens": 158,
+            "total_tokens": 2703
+          },
+          "duration_ms": 1344.0
+        },
+        {
+          "step": 2,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "b2f3b10d-b0e4-4eed-9c02-026c30a6718b",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 2932,
+            "completion_tokens": 252,
+            "total_tokens": 3184
+          },
+          "duration_ms": 2532.0
+        }
+      ],
+      "final_answer": "No verified service change supports completion. Deployment of auth to production was not performed. Preflight check returned status BLOCKED, so the workflow stopped before snapshot or execution.\n\nBlocking reason: cpu_capacity check failed. Available CPU is 500 millis, but the plan requires an additional 1500 millis (2 replicas × 1000 millis + 1 surge replica). Memory (15360 MB available vs 512 MB required) and snapshot capacity (100 slots vs 2 required) are sufficient.\n\nPreflight ID: pre-2e03a1ad32d66d8da943541b (expires 2026-11-12T16:04:08Z).\n\nNo change ID exists because no change was executed. To proceed, reduce CPU per replica or replica/surge count to fit within available capacity, or free up cluster CPU, then re-run readiness.",
+      "trace": "examples/live-deploy_capacity_blocked.jsonl"
+    },
+    {
+      "case": "deploy_rollback",
+      "passed": true,
+      "checks": {
+        "expected_status": true,
+        "approval_count": true,
+        "no_change_before_first_approval": true,
+        "one_confirmed_change": true,
+        "snapshot_before_write": true,
+        "verified_outcome": true,
+        "expected_change_status": true,
+        "model_confirmed": true
+      },
+      "status": "FAILED",
+      "stop_reason": "change_rolled_back",
+      "session_id": "5a679c9092454ec8936d7a0aabbb50fe",
+      "steps": 5,
+      "tool_attempts": 4,
+      "elapsed_seconds": 7.594,
+      "approvals": [
+        {
+          "tool": "execute_service_change",
+          "changes_before_decision": 0,
+          "action_id": "5a679c9092454ec8936d7a0aabbb50fe:e62d294ac2f40ff3f8aa0a982b6789dd57f5f99bba7c9f0f5f45bafd21f339c1",
+          "decision": "approve"
+        }
+      ],
+      "changes": [
+        {
+          "change_id": "chg-pre-eaf8a47e64cfce1df850488f",
+          "snapshot_id": "snap-pre-eaf8a47e64cfce1df850488f",
+          "plan": {
+            "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "status": "ROLLED_BACK",
+          "revision": 4,
+          "health": "HEALTHY",
+          "rollback_snapshot_id": "rollback-chg-pre-eaf8a47e64cfce1df850488f",
+          "verified": true,
+          "owner_id": "live-evaluation-controller"
+        }
+      ],
+      "audit": [
+        {
+          "event": "preflight_completed",
+          "timestamp": "2026-11-12T15:59:13.019599+00:00",
+          "trace_id": "5a679c9092454ec8936d7a0aabbb50fe",
+          "span_id": "eaf8a47e64cfce1d",
+          "parent_span_id": "5a679c9092454ec8",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "66b569604bef4142a5db8bfe76335863",
+          "preflight_id": "pre-eaf8a47e64cfce1df850488f",
+          "plan": {
+            "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "result": {
+            "preflight_id": "pre-eaf8a47e64cfce1df850488f",
+            "status": "READY",
+            "checks": {
+              "operator_authorized": true,
+              "cluster_ready": true,
+              "dependencies_ready": true,
+              "artifact_available_and_verified": true,
+              "rollback_artifact_retained": true,
+              "configuration_registered": true,
+              "cpu_capacity": true,
+              "memory_capacity": true,
+              "snapshot_capacity": true
+            },
+            "available": {
+              "cpu_millis": 7000,
+              "memory_mb": 15360,
+              "snapshot_slots": 99
+            },
+            "required_extra": {
+              "cpu_millis": 500,
+              "memory_mb": 512,
+              "snapshot_slots": 2
+            },
+            "source_revision": 2,
+            "expires_at": "2026-11-12T16:04:13.019599+00:00"
+          },
+          "sequence": 8,
+          "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "entry_hash": "50041f43310f1cd6261321a28711ba0c6322e3cee7bceac194aad2f30d0fb885"
+        },
+        {
+          "event": "preflight_revalidated",
+          "timestamp": "2026-11-12T15:59:14.194523+00:00",
+          "trace_id": "5a679c9092454ec8936d7a0aabbb50fe",
+          "span_id": "35ff3b17ff48b35c",
+          "parent_span_id": "5a679c9092454ec8",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "ca5de149dfca476383446b86bdf3e0cd",
+          "preflight_id": "pre-eaf8a47e64cfce1df850488f",
+          "checks": {
+            "operator_authorized": true,
+            "cluster_ready": true,
+            "dependencies_ready": true,
+            "artifact_available_and_verified": true,
+            "rollback_artifact_retained": true,
+            "configuration_registered": true,
+            "cpu_capacity": true,
+            "memory_capacity": true,
+            "snapshot_capacity": true
+          },
+          "available": {
+            "cpu_millis": 7000,
+            "memory_mb": 15360,
+            "snapshot_slots": 99
+          },
+          "required_extra": {
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "snapshot_slots": 2
+          },
+          "revision": 2,
+          "sequence": 9,
+          "previous_hash": "50041f43310f1cd6261321a28711ba0c6322e3cee7bceac194aad2f30d0fb885",
+          "entry_hash": "daf849b208cdbfcd46e3a20f6cac5c6ff9dad83531ebaa08005fcea6d0fd90a6"
+        },
+        {
+          "event": "snapshot_captured",
+          "timestamp": "2026-11-12T15:59:14.194523+00:00",
+          "trace_id": "5a679c9092454ec8936d7a0aabbb50fe",
+          "span_id": "35ff3b17ff48b35c",
+          "parent_span_id": "5a679c9092454ec8",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "ca5de149dfca476383446b86bdf3e0cd",
+          "snapshot_id": "snap-pre-eaf8a47e64cfce1df850488f",
+          "checksum": "8e32d3cb4945d641ccff3b662b74e0917f1ad63cc20384b4ece08d9ca79a4ae7",
+          "source_revision": 2,
+          "sequence": 10,
+          "previous_hash": "daf849b208cdbfcd46e3a20f6cac5c6ff9dad83531ebaa08005fcea6d0fd90a6",
+          "entry_hash": "70474c3f677c31ca06654467e2da24c796bdd1626e072efd825434160199ccde"
+        },
+        {
+          "event": "preflight_revalidated",
+          "timestamp": "2026-11-12T15:59:16.041143+00:00",
+          "trace_id": "5a679c9092454ec8936d7a0aabbb50fe",
+          "span_id": "2ffacd5579ddfd80",
+          "parent_span_id": "5a679c9092454ec8",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "5a679c9092454ec8936d7a0aabbb50fe:e62d294ac2f40ff3f8aa0a982b6789dd57f5f99bba7c9f0f5f45bafd21f339c1",
+          "preflight_id": "pre-eaf8a47e64cfce1df850488f",
+          "checks": {
+            "operator_authorized": true,
+            "cluster_ready": true,
+            "dependencies_ready": true,
+            "artifact_available_and_verified": true,
+            "rollback_artifact_retained": true,
+            "configuration_registered": true,
+            "cpu_capacity": true,
+            "memory_capacity": true,
+            "snapshot_capacity": true
+          },
+          "available": {
+            "cpu_millis": 7000,
+            "memory_mb": 15360,
+            "snapshot_slots": 98
+          },
+          "required_extra": {
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "snapshot_slots": 1
+          },
+          "revision": 2,
+          "sequence": 11,
+          "previous_hash": "70474c3f677c31ca06654467e2da24c796bdd1626e072efd825434160199ccde",
+          "entry_hash": "1b8270b174c95e7e796f33fb8695990449c10fdb9acf9ba5dd4a0cef7c767223"
+        },
+        {
+          "event": "change_applied",
+          "timestamp": "2026-11-12T15:59:16.041143+00:00",
+          "trace_id": "5a679c9092454ec8936d7a0aabbb50fe",
+          "span_id": "2ffacd5579ddfd80",
+          "parent_span_id": "5a679c9092454ec8",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "5a679c9092454ec8936d7a0aabbb50fe:e62d294ac2f40ff3f8aa0a982b6789dd57f5f99bba7c9f0f5f45bafd21f339c1",
+          "change_id": "chg-pre-eaf8a47e64cfce1df850488f",
+          "snapshot_id": "snap-pre-eaf8a47e64cfce1df850488f",
+          "parameters_hash": "e62d294ac2f40ff3f8aa0a982b6789dd57f5f99bba7c9f0f5f45bafd21f339c1",
+          "approval_id": "a1fb5ce78a1143739dd261f4c9dd52e5",
+          "before_revision": 2,
+          "after_revision": 3,
+          "plan": {
+            "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "rollback_on_failure": true,
+          "sequence": 12,
+          "previous_hash": "1b8270b174c95e7e796f33fb8695990449c10fdb9acf9ba5dd4a0cef7c767223",
+          "entry_hash": "fe4699053621eaaac1b49c52bed7e840663c3a207841c9e35b2f15fa91a09cfd"
+        },
+        {
+          "event": "snapshot_captured",
+          "timestamp": "2026-11-12T15:59:16.041143+00:00",
+          "trace_id": "5a679c9092454ec8936d7a0aabbb50fe",
+          "span_id": "2ffacd5579ddfd80",
+          "parent_span_id": "5a679c9092454ec8",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "5a679c9092454ec8936d7a0aabbb50fe:e62d294ac2f40ff3f8aa0a982b6789dd57f5f99bba7c9f0f5f45bafd21f339c1",
+          "snapshot_id": "rollback-chg-pre-eaf8a47e64cfce1df850488f",
+          "checksum": "9e0618beb6651ad873b497e00ed0428044fb46afd28d78d60ac66b526dc536fd",
+          "source_revision": 3,
+          "sequence": 13,
+          "previous_hash": "fe4699053621eaaac1b49c52bed7e840663c3a207841c9e35b2f15fa91a09cfd",
+          "entry_hash": "4d59fb891e2adf8a17fc73cb696c45ab9c024e18d3a9f11976f0f279c1830eea"
+        },
+        {
+          "event": "rollback_completed",
+          "timestamp": "2026-11-12T15:59:16.041143+00:00",
+          "trace_id": "5a679c9092454ec8936d7a0aabbb50fe",
+          "span_id": "2ffacd5579ddfd80",
+          "parent_span_id": "5a679c9092454ec8",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "5a679c9092454ec8936d7a0aabbb50fe:e62d294ac2f40ff3f8aa0a982b6789dd57f5f99bba7c9f0f5f45bafd21f339c1",
+          "change_id": "chg-pre-eaf8a47e64cfce1df850488f",
+          "snapshot_id": "snap-pre-eaf8a47e64cfce1df850488f",
+          "rollback_snapshot_id": "rollback-chg-pre-eaf8a47e64cfce1df850488f",
+          "reason": "approved_failure_compensation",
+          "after_revision": 4,
+          "health": "HEALTHY",
+          "sequence": 14,
+          "previous_hash": "4d59fb891e2adf8a17fc73cb696c45ab9c024e18d3a9f11976f0f279c1830eea",
+          "entry_hash": "d7df16a6867df2538b49fb3f2a09ae42b89611e0ffd9a89eeafbfc6a65e9321c"
+        },
+        {
+          "event": "change_verified",
+          "timestamp": "2026-11-12T15:59:17.340675+00:00",
+          "trace_id": "5a679c9092454ec8936d7a0aabbb50fe",
+          "span_id": "495f08ea7e7be3af",
+          "parent_span_id": "5a679c9092454ec8",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "e8ffa26519d74fee9787fff4354b047e",
+          "change_id": "chg-pre-eaf8a47e64cfce1df850488f",
+          "snapshot_id": "snap-pre-eaf8a47e64cfce1df850488f",
+          "health": "HEALTHY",
+          "revision": 4,
+          "sequence": 15,
+          "previous_hash": "d7df16a6867df2538b49fb3f2a09ae42b89611e0ffd9a89eeafbfc6a65e9321c",
+          "entry_hash": "c8185f1ac88ac8ee435c4143331be0d7aa1100d52ac5f76cb94d87c6480a8554"
+        }
+      ],
+      "requests": [
+        {
+          "step": 1,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "0e87d38e-db7c-4735-8388-e7349f59f366",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 2549,
+            "completion_tokens": 143,
+            "total_tokens": 2692
+          },
+          "duration_ms": 1672.0
+        },
+        {
+          "step": 2,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "b522b2ee-34ab-489b-a68b-67475ff3c623",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 2916,
+            "completion_tokens": 60,
+            "total_tokens": 2976
+          },
+          "duration_ms": 1157.0
+        },
+        {
+          "step": 3,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "4dbc79c8-3081-4230-ab00-3ebfcbe599b2",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 3259,
+            "completion_tokens": 171,
+            "total_tokens": 3430
+          },
+          "duration_ms": 1828.0
+        },
+        {
+          "step": 4,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "d96df1e2-a5e9-4cb5-814c-a8900a8dd948",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 3622,
+            "completion_tokens": 71,
+            "total_tokens": 3693
+          },
+          "duration_ms": 1297.0
+        },
+        {
+          "step": 5,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "87b7db82-c18b-4d06-b954-c751ddcfc986",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 3840,
+            "completion_tokens": 180,
+            "total_tokens": 4020
+          },
+          "duration_ms": 1563.0
+        }
+      ],
+      "final_answer": "The change was rolled back to its saved snapshot. Deployment of auth to staging was attempted with rollback-on-failure enabled. Preflight passed (READY) and a snapshot was captured, but the deployment failed and was automatically rolled back. The service is currently HEALTHY at revision 4.\n\nConfirmed change ID: chg-pre-eaf8a47e64cfce1df850488f\nSnapshot ID: snap-pre-eaf8a47e64cfce1df850488f\nRollback snapshot ID: rollback-chg-pre-eaf8a47e64cfce1df850488f\nFinal status: ROLLED_BACK (deployment failed safely; no further rollback needed).",
+      "trace": "examples/live-deploy_rollback.jsonl"
+    },
+    {
+      "case": "deploy_late_failure",
+      "passed": true,
+      "checks": {
+        "expected_status": true,
+        "approval_count": true,
+        "no_change_before_first_approval": true,
+        "one_confirmed_change": true,
+        "snapshot_before_write": true,
+        "verified_outcome": true,
+        "expected_change_status": true,
+        "model_confirmed": true
+      },
+      "status": "FAILED",
+      "stop_reason": "change_rolled_back",
+      "session_id": "eee887fcf1e543d995d3be0e693b4b09",
+      "steps": 6,
+      "tool_attempts": 5,
+      "elapsed_seconds": 10.031,
+      "approvals": [
+        {
+          "tool": "execute_service_change",
+          "changes_before_decision": 0,
+          "action_id": "eee887fcf1e543d995d3be0e693b4b09:f5533c692a6a26dd2881698a418e3d0be839fe4d112ebbf8a7c59e7e9876bcc0",
+          "decision": "approve"
+        },
+        {
+          "tool": "rollback_service_change",
+          "changes_before_decision": 1,
+          "action_id": "eee887fcf1e543d995d3be0e693b4b09:3ff6870eefacff07d519af70092e2d6dbfa9f774ea5b439ff2aca888a9223ea6",
+          "decision": "approve"
+        }
+      ],
+      "changes": [
+        {
+          "change_id": "chg-pre-88731fa9570c29dc84b0403d",
+          "snapshot_id": "snap-pre-88731fa9570c29dc84b0403d",
+          "plan": {
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "status": "ROLLED_BACK",
+          "revision": 6,
+          "health": "HEALTHY",
+          "rollback_snapshot_id": "rollback-chg-pre-88731fa9570c29dc84b0403d",
+          "verified": true,
+          "owner_id": "live-evaluation-controller"
+        }
+      ],
+      "audit": [
+        {
+          "event": "preflight_completed",
+          "timestamp": "2026-11-12T15:59:20.203039+00:00",
+          "trace_id": "eee887fcf1e543d995d3be0e693b4b09",
+          "span_id": "88731fa9570c29dc",
+          "parent_span_id": "eee887fcf1e543d9",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "89b05e3a810f452e83211d1e57e87672",
+          "preflight_id": "pre-88731fa9570c29dc84b0403d",
+          "plan": {
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "result": {
+            "preflight_id": "pre-88731fa9570c29dc84b0403d",
+            "status": "READY",
+            "checks": {
+              "operator_authorized": true,
+              "cluster_ready": true,
+              "dependencies_ready": true,
+              "artifact_available_and_verified": true,
+              "rollback_artifact_retained": true,
+              "configuration_registered": true,
+              "cpu_capacity": true,
+              "memory_capacity": true,
+              "snapshot_capacity": true
+            },
+            "available": {
+              "cpu_millis": 7000,
+              "memory_mb": 15360,
+              "snapshot_slots": 97
+            },
+            "required_extra": {
+              "cpu_millis": 500,
+              "memory_mb": 512,
+              "snapshot_slots": 2
+            },
+            "source_revision": 4,
+            "expires_at": "2026-11-12T16:04:20.202039+00:00"
+          },
+          "sequence": 16,
+          "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "entry_hash": "75371e9a4b65517e291d217cedddd5722c2f3172a71a8dc5b2ee45364b6a825b"
+        },
+        {
+          "event": "preflight_revalidated",
+          "timestamp": "2026-11-12T15:59:21.457041+00:00",
+          "trace_id": "eee887fcf1e543d995d3be0e693b4b09",
+          "span_id": "f09b3ad3f9308afb",
+          "parent_span_id": "eee887fcf1e543d9",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "08ff2ff8e6014636abaeebf7f9e8d294",
+          "preflight_id": "pre-88731fa9570c29dc84b0403d",
+          "checks": {
+            "operator_authorized": true,
+            "cluster_ready": true,
+            "dependencies_ready": true,
+            "artifact_available_and_verified": true,
+            "rollback_artifact_retained": true,
+            "configuration_registered": true,
+            "cpu_capacity": true,
+            "memory_capacity": true,
+            "snapshot_capacity": true
+          },
+          "available": {
+            "cpu_millis": 7000,
+            "memory_mb": 15360,
+            "snapshot_slots": 97
+          },
+          "required_extra": {
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "snapshot_slots": 2
+          },
+          "revision": 4,
+          "sequence": 17,
+          "previous_hash": "75371e9a4b65517e291d217cedddd5722c2f3172a71a8dc5b2ee45364b6a825b",
+          "entry_hash": "f3bc8139f1d76b3fc772f84b91d96722fcc3ad486a690099ccaf91f08c1922bd"
+        },
+        {
+          "event": "snapshot_captured",
+          "timestamp": "2026-11-12T15:59:21.457041+00:00",
+          "trace_id": "eee887fcf1e543d995d3be0e693b4b09",
+          "span_id": "f09b3ad3f9308afb",
+          "parent_span_id": "eee887fcf1e543d9",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "08ff2ff8e6014636abaeebf7f9e8d294",
+          "snapshot_id": "snap-pre-88731fa9570c29dc84b0403d",
+          "checksum": "7af1139dcc4b78ac8389880c9b2f6a77d07f9199b4c497d487159bb7f0bae7fd",
+          "source_revision": 4,
+          "sequence": 18,
+          "previous_hash": "f3bc8139f1d76b3fc772f84b91d96722fcc3ad486a690099ccaf91f08c1922bd",
+          "entry_hash": "a5599fc58a430fc2ff5cebbbc22fe9358547c8ad79e4431e4d13076cb1373820"
+        },
+        {
+          "event": "preflight_revalidated",
+          "timestamp": "2026-11-12T15:59:23.362661+00:00",
+          "trace_id": "eee887fcf1e543d995d3be0e693b4b09",
+          "span_id": "31d87b71cd29bdad",
+          "parent_span_id": "eee887fcf1e543d9",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "eee887fcf1e543d995d3be0e693b4b09:f5533c692a6a26dd2881698a418e3d0be839fe4d112ebbf8a7c59e7e9876bcc0",
+          "preflight_id": "pre-88731fa9570c29dc84b0403d",
+          "checks": {
+            "operator_authorized": true,
+            "cluster_ready": true,
+            "dependencies_ready": true,
+            "artifact_available_and_verified": true,
+            "rollback_artifact_retained": true,
+            "configuration_registered": true,
+            "cpu_capacity": true,
+            "memory_capacity": true,
+            "snapshot_capacity": true
+          },
+          "available": {
+            "cpu_millis": 7000,
+            "memory_mb": 15360,
+            "snapshot_slots": 96
+          },
+          "required_extra": {
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "snapshot_slots": 1
+          },
+          "revision": 4,
+          "sequence": 19,
+          "previous_hash": "a5599fc58a430fc2ff5cebbbc22fe9358547c8ad79e4431e4d13076cb1373820",
+          "entry_hash": "eef8d95035c552f84490698af653895bc04b01dd834687c1897164c88971d03c"
+        },
+        {
+          "event": "change_applied",
+          "timestamp": "2026-11-12T15:59:23.362661+00:00",
+          "trace_id": "eee887fcf1e543d995d3be0e693b4b09",
+          "span_id": "31d87b71cd29bdad",
+          "parent_span_id": "eee887fcf1e543d9",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "eee887fcf1e543d995d3be0e693b4b09:f5533c692a6a26dd2881698a418e3d0be839fe4d112ebbf8a7c59e7e9876bcc0",
+          "change_id": "chg-pre-88731fa9570c29dc84b0403d",
+          "snapshot_id": "snap-pre-88731fa9570c29dc84b0403d",
+          "parameters_hash": "f5533c692a6a26dd2881698a418e3d0be839fe4d112ebbf8a7c59e7e9876bcc0",
+          "approval_id": "d44d1b2ed6e4420bb4b753b9578981e3",
+          "before_revision": 4,
+          "after_revision": 5,
+          "plan": {
+            "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "config_version": "config-v2",
+            "replicas": 2,
+            "cpu_millis": 500,
+            "memory_mb": 512,
+            "service_name": "auth",
+            "environment": "staging",
+            "operation": "deploy",
+            "surge_replicas": 1
+          },
+          "rollback_on_failure": true,
+          "sequence": 20,
+          "previous_hash": "eef8d95035c552f84490698af653895bc04b01dd834687c1897164c88971d03c",
+          "entry_hash": "b42185a4fc01b715e498bb7b7f170109b4729b6b005eb0c1df9501144058098c"
+        },
+        {
+          "event": "change_verified",
+          "timestamp": "2026-11-12T15:59:24.657586+00:00",
+          "trace_id": "eee887fcf1e543d995d3be0e693b4b09",
+          "span_id": "ee936f02cbe2b1ef",
+          "parent_span_id": "eee887fcf1e543d9",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "6bef739897ba4ec29601ec515ba1d45b",
+          "change_id": "chg-pre-88731fa9570c29dc84b0403d",
+          "snapshot_id": "snap-pre-88731fa9570c29dc84b0403d",
+          "health": "UNHEALTHY",
+          "revision": 5,
+          "sequence": 21,
+          "previous_hash": "b42185a4fc01b715e498bb7b7f170109b4729b6b005eb0c1df9501144058098c",
+          "entry_hash": "17495c015a4f57938206477b55216ee710ef6f3b408594acae9eadef84d69681"
+        },
+        {
+          "event": "rollback_authorized",
+          "timestamp": "2026-11-12T15:59:26.821117+00:00",
+          "trace_id": "eee887fcf1e543d995d3be0e693b4b09",
+          "span_id": "4a911c40bb6aeeca",
+          "parent_span_id": "eee887fcf1e543d9",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "eee887fcf1e543d995d3be0e693b4b09:3ff6870eefacff07d519af70092e2d6dbfa9f774ea5b439ff2aca888a9223ea6",
+          "change_id": "chg-pre-88731fa9570c29dc84b0403d",
+          "parameters_hash": "3ff6870eefacff07d519af70092e2d6dbfa9f774ea5b439ff2aca888a9223ea6",
+          "approval_id": "ba92c487fc454a49b96b94c59b2597ce",
+          "reason": "Post-deploy verification returned UNHEALTHY at revision 5; rolling back to snapshot state.",
+          "sequence": 22,
+          "previous_hash": "17495c015a4f57938206477b55216ee710ef6f3b408594acae9eadef84d69681",
+          "entry_hash": "52f1f824bd6c665bf90e149582923708a9634e3d1f103ad55693e2fc86ab77a6"
+        },
+        {
+          "event": "snapshot_captured",
+          "timestamp": "2026-11-12T15:59:26.821117+00:00",
+          "trace_id": "eee887fcf1e543d995d3be0e693b4b09",
+          "span_id": "4a911c40bb6aeeca",
+          "parent_span_id": "eee887fcf1e543d9",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "eee887fcf1e543d995d3be0e693b4b09:3ff6870eefacff07d519af70092e2d6dbfa9f774ea5b439ff2aca888a9223ea6",
+          "snapshot_id": "rollback-chg-pre-88731fa9570c29dc84b0403d",
+          "checksum": "f8a6e429b89454eafd29404b7314acc820610eb2c16fe83ddd72692cccd5774b",
+          "source_revision": 5,
+          "sequence": 23,
+          "previous_hash": "52f1f824bd6c665bf90e149582923708a9634e3d1f103ad55693e2fc86ab77a6",
+          "entry_hash": "883106eb3a638ee6c66e410ab94dd58a7f80dd1c2e79850e57e66be02ef51c72"
+        },
+        {
+          "event": "rollback_completed",
+          "timestamp": "2026-11-12T15:59:26.821117+00:00",
+          "trace_id": "eee887fcf1e543d995d3be0e693b4b09",
+          "span_id": "4a911c40bb6aeeca",
+          "parent_span_id": "eee887fcf1e543d9",
+          "actor_id": "live-evaluation-controller",
+          "action_id": "eee887fcf1e543d995d3be0e693b4b09:3ff6870eefacff07d519af70092e2d6dbfa9f774ea5b439ff2aca888a9223ea6",
+          "change_id": "chg-pre-88731fa9570c29dc84b0403d",
+          "snapshot_id": "snap-pre-88731fa9570c29dc84b0403d",
+          "rollback_snapshot_id": "rollback-chg-pre-88731fa9570c29dc84b0403d",
+          "reason": "Post-deploy verification returned UNHEALTHY at revision 5; rolling back to snapshot state.",
+          "after_revision": 6,
+          "health": "HEALTHY",
+          "sequence": 24,
+          "previous_hash": "883106eb3a638ee6c66e410ab94dd58a7f80dd1c2e79850e57e66be02ef51c72",
+          "entry_hash": "62737a8740d0ce9bd48b697379519a6944c30eac8f345d0cefae96901eaf8110"
+        }
+      ],
+      "requests": [
+        {
+          "step": 1,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "8849c319-ff82-40d5-b8e1-00ab573663be",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 2552,
+            "completion_tokens": 146,
+            "total_tokens": 2698
+          },
+          "duration_ms": 1265.0
+        },
+        {
+          "step": 2,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "0cbf6dd2-ec7b-4dee-ae05-48c41a5593eb",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 2925,
+            "completion_tokens": 62,
+            "total_tokens": 2987
+          },
+          "duration_ms": 1234.0
+        },
+        {
+          "step": 3,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "53a4f69f-8b7f-42ec-9cfb-bf475f0e4eb2",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 3275,
+            "completion_tokens": 184,
+            "total_tokens": 3459
+          },
+          "duration_ms": 1750.0
+        },
+        {
+          "step": 4,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "aad78557-c497-4252-b2f1-614d5541f711",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 3627,
+            "completion_tokens": 73,
+            "total_tokens": 3700
+          },
+          "duration_ms": 1281.0
+        },
+        {
+          "step": 5,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "9b9f475b-9fc1-4e08-b117-106e12f1dba9",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 3828,
+            "completion_tokens": 219,
+            "total_tokens": 4047
+          },
+          "duration_ms": 2141.0
+        },
+        {
+          "step": 6,
+          "status": "received",
+          "response_model": "deepseek-flash",
+          "request_id": "2cc278e3-f533-4f9d-9ffe-6f8527f5f1d9",
+          "finish_reason": "stop",
+          "usage": {
+            "prompt_tokens": 4235,
+            "completion_tokens": 235,
+            "total_tokens": 4470
+          },
+          "duration_ms": 2141.0
+        }
+      ],
+      "final_answer": "The change was rolled back to its saved snapshot. Deployment of auth to staging was applied but failed post-deploy verification, so it was rolled back.\n\n- Confirmed change ID: chg-pre-88731fa9570c29dc84b0403d\n- Preflight: READY (pre-88731fa9570c29dc84b0403d)\n- Snapshot: snap-pre-88731fa9570c29dc84b0403d\n- Execute result: APPLIED, revision 5, health HEALTHY at apply time\n- Verify result: UNHEALTHY at revision 5\n- Rollback result: ROLLED_BACK, revision 6, health HEALTHY, rollback snapshot rollback-chg-pre-88731fa9570c29dc84b0403d\n\nThe service is back to a healthy state; the target plan (config-v2, revision 5) did not pass verification and is not live.",
+      "trace": "examples/live-deploy_late_failure.jsonl"
+    }
+  ],
+  "finished_at": "2026-11-12T15:59:28.966968+00:00",
+  "passed": 4,
+  "total": 4,
+  "model_requests": 18,
+  "usage": {
+    "prompt_tokens": 58215,
+    "completion_tokens": 2497,
+    "total_tokens": 60712
+  },
+  "credential_scan": {
+    "passed": true,
+    "files_scanned": 89,
+    "archive_entries_scanned": 86
+  }
+}

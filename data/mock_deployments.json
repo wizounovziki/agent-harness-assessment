@@ -1,0 +1,89 @@
+{
+  "environments": {
+    "staging": {
+      "cpu_millis": 8000,
+      "memory_mb": 16384,
+      "snapshot_slots": 100,
+      "cluster_ready": true,
+      "dependencies_ready": true,
+      "allowed_operators": [
+        "local-user",
+        "demo-user",
+        "example-user",
+        "live-evaluation-controller"
+      ],
+      "allowed_operations": [
+        "deploy",
+        "update",
+        "decommission",
+        "rollback"
+      ]
+    },
+    "production": {
+      "cpu_millis": 1500,
+      "memory_mb": 16384,
+      "snapshot_slots": 100,
+      "cluster_ready": true,
+      "dependencies_ready": true,
+      "allowed_operators": [
+        "local-user",
+        "demo-user",
+        "example-user",
+        "live-evaluation-controller"
+      ],
+      "allowed_operations": [
+        "deploy",
+        "update",
+        "decommission",
+        "rollback"
+      ]
+    }
+  },
+  "workloads": {
+    "staging": {
+      "auth": {
+        "image_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "config_version": "config-v1",
+        "replicas": 2,
+        "cpu_millis": 500,
+        "memory_mb": 512
+      }
+    },
+    "production": {
+      "auth": {
+        "image_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "config_version": "config-v1",
+        "replicas": 2,
+        "cpu_millis": 500,
+        "memory_mb": 512
+      }
+    }
+  },
+  "artifacts": {
+    "sha256:1111111111111111111111111111111111111111111111111111111111111111": {
+      "retained": true,
+      "verified": true,
+      "runtime_health": "HEALTHY"
+    },
+    "sha256:2222222222222222222222222222222222222222222222222222222222222222": {
+      "retained": true,
+      "verified": true,
+      "runtime_health": "HEALTHY"
+    },
+    "sha256:3333333333333333333333333333333333333333333333333333333333333333": {
+      "retained": true,
+      "verified": true,
+      "runtime_health": "UNHEALTHY"
+    }
+  },
+  "configurations": {
+    "config-v1": {
+      "LOG_LEVEL": "info",
+      "AUTH_POLICY_REF": "policy-v1"
+    },
+    "config-v2": {
+      "LOG_LEVEL": "warning",
+      "AUTH_POLICY_REF": "policy-v2"
+    }
+  }
+}

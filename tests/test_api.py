@@ -57,6 +57,36 @@ def decision(client, state, value="approve", **overrides):
     )
 
 
+def test_deployment_approval_survives_restart_and_audit_is_owner_scoped(tmp_path):
+    settings = configured(tmp_path)
+
+    def deployment_app():
+        return create_app(settings, auth_tokens={"alice-token": "demo-user", "bob-token": "reader"})
+
+    with TestClient(deployment_app()) as client:
+        response = client.post(
+            "/runs",
+            headers=AUTH,
+            json={"objective": "Deploy auth and verify health.", "scenario_id": "deploy_success"},
+        )
+        session_id = response.json()["session_id"]
+        state = poll(client, session_id, {"AWAITING_APPROVAL"})
+        before = client.get(f"/runs/{session_id}/changes", headers=AUTH).json()
+        assert before["changes"] == []
+        assert any(e["event"] == "snapshot_captured" for e in before["audit"])
+        assert client.get(f"/runs/{session_id}/changes", headers=BOB).status_code == 404
+    with TestClient(deployment_app()) as client:
+        resumed = client.get(f"/runs/{session_id}", headers=AUTH).json()
+        assert resumed["pending_tool_call"] == state["pending_tool_call"]
+        assert decision(client, resumed).status_code == 202
+        result = poll(client, session_id, {"COMPLETED", "FAILED", "NEEDS_REVIEW"})
+        assert result["status"] == "COMPLETED"
+        audit = client.get(f"/runs/{session_id}/changes", headers=AUTH).json()
+        assert len(audit["changes"]) == 1
+        assert audit["changes"][0]["verified"]
+        assert all(e["entry_hash"] for e in audit["audit"])
+
+
 def test_api_success_approval_trace_and_incident(tmp_path):
     with TestClient(app_for(configured(tmp_path))) as client:
         session_id = create(client)

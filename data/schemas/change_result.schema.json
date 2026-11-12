@@ -1,0 +1,57 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "change_id": {
+      "title": "Change Id",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "APPLIED",
+        "UNHEALTHY",
+        "ROLLED_BACK",
+        "NEEDS_REVIEW"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "revision": {
+      "title": "Revision",
+      "type": "integer"
+    },
+    "health": {
+      "enum": [
+        "HEALTHY",
+        "UNHEALTHY",
+        "OFFLINE"
+      ],
+      "title": "Health",
+      "type": "string"
+    },
+    "rollback_snapshot_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rollback Snapshot Id"
+    }
+  },
+  "required": [
+    "change_id",
+    "snapshot_id",
+    "status",
+    "revision",
+    "health"
+  ],
+  "title": "ChangeOutput",
+  "type": "object"
+}

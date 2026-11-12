@@ -13,6 +13,7 @@ from uuid import uuid4
 
 from pydantic import ValidationError
 
+from src.change_schemas import ChangeOutput
 from src.errors import (
     ConflictError,
     ExecutionLimit,
@@ -26,7 +27,7 @@ from src.schemas import (
     AgentState,
     AgentStatus,
     ChatMessage,
-    CreateIncidentInput,
+    Contract,
     CreateIncidentOutput,
     ExecutionLimits,
     LLMAction,
@@ -38,7 +39,7 @@ from src.storage import SQLiteStore, parameters_hash
 from src.tools import ToolContext, ToolRegistry
 from src.tracer import Tracer
 
-ApprovalCallback = Callable[[CreateIncidentInput], bool | Awaitable[bool]]
+ApprovalCallback = Callable[[Contract], bool | Awaitable[bool]]
 logger = logging.getLogger("operations_harness")
 
 
@@ -152,6 +153,14 @@ class AgentHarness:
             ChatMessage(role="user", content=json.dumps({"observation": observation}))
         )
         self.state.pending_tool_call = None
+        if (
+            result
+            and pending.tool_name in {"execute_service_change", "rollback_service_change"}
+            and result.get("status") == "NEEDS_REVIEW"
+        ):
+            self.state.status = AgentStatus.NEEDS_REVIEW
+            self.state.stop_reason = "change_recovery_requires_review"
+            self.state.final_answer = "The service change requires operator recovery review."
         self._touch()
         self.tracer.record(
             self.state,
@@ -247,7 +256,7 @@ class AgentHarness:
         digest = parameters_hash(action.tool_name, action.tool_args)
         pending = PendingToolCall(
             action_id=f"{self.state.session_id}:{digest}"
-            if action.tool_name == "create_incident"
+            if action.tool_name in self.registry.APPROVAL_TOOLS
             else uuid4().hex,
             tool_name=action.tool_name,
             tool_args=action.tool_args,
@@ -266,25 +275,33 @@ class AgentHarness:
             )
             return
         pending.tool_args = args.model_dump(mode="json")
+        digest = parameters_hash(pending.tool_name, pending.tool_args)
+        pending.parameters_hash = digest
+        if pending.tool_name in self.registry.APPROVAL_TOOLS:
+            pending.action_id = f"{self.state.session_id}:{digest}"
         self.state.pending_tool_call = pending
-        if pending.tool_name == "create_incident":
-            if self.state.incident_creation_rejected:
+        if pending.tool_name in self.registry.APPROVAL_TOOLS:
+            if pending.tool_name in self.state.rejected_tools or (
+                pending.tool_name == "create_incident" and self.state.incident_creation_rejected
+            ):
                 self._observe(
                     pending,
                     error={
                         "code": "USER_REJECTED",
-                        "message": "User denied incident creation for this run.",
+                        "message": "User denied this operation for this run.",
                         "retryable": False,
                     },
                 )
                 return
             # Identical creation proposals reuse a verified result in this run.
-            existing = self.store.lookup_incident(f"{self.state.session_id}:{digest}")
+            existing = (
+                self.store.lookup_incident(pending.action_id)
+                if pending.tool_name == "create_incident"
+                else self.registry.tools.operations.lookup(pending.action_id, self.state.session_id)
+            )
             if existing:
                 pending.approval_status = "APPROVED"
-                self._observe(
-                    pending, result=CreateIncidentOutput.model_validate(existing).model_dump()
-                )
+                self._observe(pending, result=self._validated_write(pending.tool_name, existing))
                 return
             pending.approval_id = uuid4().hex
             pending.approval_status = "PENDING"
@@ -309,7 +326,7 @@ class AgentHarness:
         assert self.state is not None and self.approval_callback is not None
         pending = self.state.pending_tool_call
         assert pending is not None and pending.approval_id is not None
-        args = CreateIncidentInput.model_validate(pending.tool_args)
+        args = self.registry.validate_input(pending.tool_name, pending.tool_args)
         callback = self.approval_callback
 
         async def invoke():
@@ -354,21 +371,23 @@ class AgentHarness:
         args = self.registry.validate_input(pending.tool_name, pending.tool_args)
         if parameters_hash(pending.tool_name, args.model_dump()) != pending.parameters_hash:
             raise ConflictError("Pending action parameters changed")
-        if pending.tool_name == "create_incident":
+        if pending.tool_name in self.registry.APPROVAL_TOOLS:
             if pending.approval_status == "REJECTED":
                 self._observe(
                     pending,
                     result=CreateIncidentOutput(
                         incident_id="", status="BLOCKED_BY_USER", created_at=utc_now()
-                    ).model_dump(),
+                    ).model_dump()
+                    if pending.tool_name == "create_incident"
+                    else {"status": "BLOCKED_BY_USER", "operation": pending.tool_name},
                 )
                 return
             if not self.store.approval_allows(state, pending.action_id, pending.parameters_hash):
                 raise ConflictError("No current approval for the pending action")
             if pending.attempts:
                 try:
-                    existing = self.registry.tools.lookup_incident(
-                        f"{state.session_id}:{pending.parameters_hash}"
+                    existing = self.registry.tools.lookup_write(
+                        pending.tool_name, pending.action_id, state.session_id
                     )
                 except ConnectionError as exc:
                     raise WriteOutcomeUnknown(
@@ -376,7 +395,7 @@ class AgentHarness:
                     ) from exc
                 if existing:
                     self._observe(
-                        pending, result=CreateIncidentOutput.model_validate(existing).model_dump()
+                        pending, result=self._validated_write(pending.tool_name, existing)
                     )
                     return
         while pending.attempts <= state.limits.max_retries:
@@ -414,10 +433,10 @@ class AgentHarness:
                     approval_status=pending.approval_status,
                     duration_ms=(time.monotonic() - started) * 1000,
                 )
-                if pending.tool_name == "create_incident":
+                if pending.tool_name in self.registry.APPROVAL_TOOLS:
                     try:
-                        existing = self.registry.tools.lookup_incident(
-                            f"{state.session_id}:{pending.parameters_hash}"
+                        existing = self.registry.tools.lookup_write(
+                            pending.tool_name, pending.action_id, state.session_id
                         )
                     except ConnectionError as lookup_error:
                         raise WriteOutcomeUnknown(
@@ -426,7 +445,7 @@ class AgentHarness:
                     if existing:
                         self._observe(
                             pending,
-                            result=CreateIncidentOutput.model_validate(existing).model_dump(),
+                            result=self._validated_write(pending.tool_name, existing),
                         )
                         return
                 if timer.expired() and total_budget_timer:
@@ -461,9 +480,39 @@ class AgentHarness:
             return
         self._observe(pending, error={"code": "RETRIES_EXHAUSTED", "retryable": False})
 
+    @staticmethod
+    def _validated_write(tool_name, result):
+        model = CreateIncidentOutput if tool_name == "create_incident" else ChangeOutput
+        return model.model_validate(result).model_dump()
+
     def _finish_answer(self, answer: str):
         assert self.state is not None
         state = self.state
+        changes = self.registry.tools.operations.changes(state.session_id)
+        if any(c["status"] in {"UNHEALTHY", "NEEDS_REVIEW"} or not c["verified"] for c in changes):
+            state.status = AgentStatus.NEEDS_REVIEW
+            state.stop_reason = "change_verification_incomplete"
+            state.final_answer = "A service change remains unverified or unhealthy. " + answer
+            return
+        if any(c["status"] == "ROLLED_BACK" for c in changes):
+            state.status = AgentStatus.FAILED
+            state.stop_reason = "change_rolled_back"
+            state.final_answer = "The change was rolled back to its saved snapshot. " + answer
+            return
+        needs_change = bool(
+            re.search(
+                r"deploy|rollout|decommission|rollback|部署|发版|下线|回滚|回退",
+                state.objective,
+                re.I,
+            )
+        )
+        if (needs_change and not changes and not state.rejected_tools) or any(
+            c["change_id"] not in answer for c in changes
+        ):
+            state.status = AgentStatus.FAILED
+            state.stop_reason = "completion_evidence_missing"
+            state.final_answer = "No verified service change supports completion. " + answer
+            return
         created = {
             item["result"]["incident_id"]
             for item in state.observations
@@ -486,7 +535,7 @@ class AgentHarness:
         has_status = any(
             item["result"].get("status") in {"HEALTHY", "DEGRADED", "DOWN", "UNKNOWN"}
             for item in state.observations
-        )
+        ) or any(c["verified"] and c["health"] in {"HEALTHY", "OFFLINE"} for c in changes)
         needs_status = bool(re.search(r"check|health|status|检查|状态", state.objective, re.I))
         creation_failed = any(
             item["tool_name"] == "create_incident" and item["error"] for item in state.observations
@@ -495,7 +544,7 @@ class AgentHarness:
             mentioned - created
             or (creation_claim and not created)
             or (created and not mentioned)
-            or (needs_status and not has_status)
+            or (needs_status and not has_status and not state.rejected_tools)
             or (creation_failed and not created and not state.incident_creation_rejected)
         ):
             state.status = AgentStatus.FAILED
@@ -506,7 +555,9 @@ class AgentHarness:
         else:
             state.status = AgentStatus.COMPLETED
             state.stop_reason = (
-                "user_rejected" if state.incident_creation_rejected else "goal_completed"
+                "user_rejected"
+                if state.incident_creation_rejected or state.rejected_tools
+                else "goal_completed"
             )
             state.final_answer = answer
 
@@ -572,6 +623,19 @@ class AgentHarness:
             logger.exception("Run %s failed inside the execution boundary", self.state.session_id)
         finally:
             self._pause_clock()
+            if self.state.status not in {
+                AgentStatus.RUNNING,
+                AgentStatus.AWAITING_APPROVAL,
+                AgentStatus.NEEDS_REVIEW,
+            }:
+                changes = self.registry.tools.operations.changes(self.state.session_id)
+                if any(
+                    c["status"] in {"UNHEALTHY", "NEEDS_REVIEW"} or not c["verified"]
+                    for c in changes
+                ):
+                    self.state.status = AgentStatus.NEEDS_REVIEW
+                    self.state.stop_reason = "change_verification_incomplete"
+                    self.state.final_answer = "Execution stopped with an unresolved service change; operator review is required."
             try:
                 self._record(
                     "run_checkpoint",

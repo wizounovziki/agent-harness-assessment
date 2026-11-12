@@ -1,17 +1,24 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "services": 3,
   "knowledge_documents": 4,
-  "scenarios": 13,
+  "scenarios": 21,
+  "deployment_environments": 2,
+  "registered_tools": 8,
   "license": "MIT",
   "sha256": {
-    "DATASET.md": "4d716af66ee3357c44304dfcd060824a716a9a4fd1f26c030e47b91d39f8dab6",
+    "DATASET.md": "458158e88865ecffd29bf809199c7b8999f202203acce044ac919037c8b6d5c3",
+    "mock_deployments.json": "323ed7dab56cee16b3511d9677939b9ce40d6b6e6bc3bc7f8cc2efe250b445d4",
     "mock_kb_docs.json": "cf08947ef928adfb9a07efcf3d118e152d8ea57d81361d1e35555a4bd924d440",
     "mock_services.json": "1717afab3b99d6becb756619f2b946addda90eb7d58cf1ab9baaabb537acb16f",
-    "scenarios.json": "4f4ba5bfd66cd51b8d043926d846e7e606950f40bdb87bf61f66d8ef6b30d927",
+    "scenarios.json": "d1504e106b5dbf4b46885b9d6ffb406b096a7c4d46b560ff65e8dee419c6c12f",
+    "schemas/change_plan.schema.json": "8655ac49d4a146fbc440025e6d527ddacd7a421bb4b65d9a48c6686da4531865",
+    "schemas/change_result.schema.json": "b0cae68baa61be7b6b8bceaf15a5811893fcf51be5d1ec1ddfca1d7a14efce2d",
     "schemas/knowledge_result.schema.json": "03971f9b93ca225b2db251d1f4a750ca75b7b25332c1f27caa37c0b678d9852d",
-    "schemas/model_action.schema.json": "0914f909886c519826df52ec625b2abf46d2d29664812e533dfbf8ee2a36d8a2",
-    "schemas/scenario.schema.json": "b6005e4f5aba8c27f420b92b7605280d10900567749731ec3f7fec36b893f758",
-    "schemas/service_status.schema.json": "bc29181ed053aceb0f4d69b746039ddbc2c9d3805c9388f9331fd8d012e1510e"
+    "schemas/model_action.schema.json": "d78b649f9ea966a7077be62cc34b31405420014c870b2ae87196021644a64def",
+    "schemas/readiness.schema.json": "a872bc64180eb0b883dd1a0d33f90de6d546c490229ce5f1f280780eb267a53c",
+    "schemas/scenario.schema.json": "8cdfd2df24ac96a3d477af7882e87f533ccca5eafb5e5190e78968a0e8b54406",
+    "schemas/service_status.schema.json": "bc29181ed053aceb0f4d69b746039ddbc2c9d3805c9388f9331fd8d012e1510e",
+    "schemas/snapshot.schema.json": "15268a883db7ddf5bb922969d4b6e5547fb9a0468b8143872c30a64c45186731"
   }
 }

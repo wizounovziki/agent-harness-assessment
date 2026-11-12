@@ -2,7 +2,7 @@
 
 Base URL: `http://127.0.0.1:8000`. Start with `uv run python main.py serve`.
 
-Import the [Postman collection](../postman_collection.json) and [environment template](../postman_environment.json). The collection contains 6 folders and 27 requests with 46 assertions. Run it with a 100 ms delay and scripted mode to reproduce deterministic results. Each polling loop is limited to 100 attempts.
+Import the [Postman collection](../postman_collection.json) and [environment template](../postman_environment.json). The collection contains 10 folders and 49 requests with 86 assertions. Run it with a 100 ms delay and scripted mode to reproduce deterministic results. Each polling loop is limited to 100 attempts.
 
 The [OpenAPI 3.1 contract](./openapi.json) is exported from the actual FastAPI application. Interactive documentation is available at `/docs`; the running specification is at `/openapi.json`. Regenerate the snapshot with `uv run python -m scripts.export_openapi`.
 
@@ -20,6 +20,7 @@ Requests use `Content-Type: application/json`. Unknown fields are rejected. POST
 | GET | `/runs/{session_id}` | 200 | Persisted state, counters, observations, pending proposal and final answer |
 | GET | `/runs/{session_id}/events?after=0` | 200 | Redacted events after the supplied sequence; `after` must be nonnegative |
 | GET | `/runs/{session_id}/incidents` | 200 | Confirmed mock incident records and their payloads |
+| GET | `/runs/{session_id}/changes` | 200 | Owned service changes and validated business audit/hash chain |
 | GET | `/runs/{session_id}/trace.jsonl` | 200 | `application/x-ndjson` trace download, rebuilt from SQLite |
 | POST | `/runs/{session_id}/approvals/{approval_id}` | 202 | `{ "decision": "approve", "parameters_hash": "<64-character hash from the saved proposal>" }`; decision can also be `reject` |
 | POST | `/runs/{session_id}/cancel` | 200 | `{ "reason": "Stop this run" }`; cancels active work or pending approval |

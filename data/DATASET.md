@@ -1,4 +1,4 @@
-# Mock Dataset v1.0.0
+# Mock Dataset v1.1.0
 
 This dataset contains synthetic operations records and deterministic fault scenarios. It includes no production logs, personal records, credentials, or third-party documents. It is distributed under the repository's MIT license.
 
@@ -8,8 +8,9 @@ This dataset contains synthetic operations records and deterministic fault scena
 | --- | --- |
 | `mock_services.json` | Payment DOWN, auth HEALTHY, checkout DEGRADED; latency in milliseconds and fixed timezone-aware fixture timestamps |
 | `mock_kb_docs.json` | Four synthetic service runbooks and severity guidance documents |
-| `scenarios.json` | Thirteen model scripts and deterministic fault configurations |
-| `schemas/` | Model-action, scenario and tool-result JSON Schema exports |
+| `scenarios.json` | Twenty-one model scripts and deterministic fault configurations |
+| `mock_deployments.json` | Two trusted environments, CPU/memory/snapshot quotas, operator policy, immutable artifact references and configuration versions |
+| `schemas/` | Eight JSON Schema exports including preflight, snapshot and change-result contracts |
 | `manifest.json` | Version, record counts and SHA-256 checksums, generated during packaging |
 
 Service fields are `service_name`, `status` (`HEALTHY`, `DEGRADED`, `DOWN`, `UNKNOWN`), `latency_ms`, and `last_updated`. Knowledge fields are `doc_id`, `title`, and `content`.
@@ -38,6 +39,21 @@ Fault outcomes are `ok`, `timeout`, `connection_error`, `permanent_error`, `dela
 
 The payment degradation and severity mappings are scenario rules. Fixture timestamps describe mock samples. Incident IDs and creation times are generated at execution; IDs remain stable for a run and canonical incident parameters.
 
+## Change-control scenarios
+
+| ID | Expected behavior |
+| --- | --- |
+| deploy_success | Preflight, snapshot, approval, execution and verified health |
+| deploy_capacity_blocked | Insufficient rollout capacity; no change |
+| deploy_rollback | Immediate unhealthy rollout restored under approved recovery scope |
+| deploy_late_failure | Separate rollback approval after a later failed check |
+| deploy_rollback_failure | Failed recovery enters NEEDS_REVIEW |
+| decommission | Snapshot and approval before zero replicas; verify OFFLINE |
+| deploy_response_loss | Reconcile the committed change without duplicate deployment |
+| deploy_unknown_write | Unavailable reconciliation requires review |
+
+Deployment fields include image_digest, config_version, replicas, CPU millicores and memory MB. Configuration values are synthetic references. Image digests represent immutable mock artifacts, not downloadable container layers. Runtime environment state and snapshots persist in SQLite; the JSON files are initial fixtures. Scenario late_health_failure and rollback_unhealthy inject business health failures. Full tool contracts and snapshot semantics are in [operations safety](../docs/operations-safety.md).
+
 ## Reproduce and package
 
 ```powershell
@@ -46,4 +62,4 @@ uv run pytest -q
 uv run python -m scripts.prepare_submission
 ```
 
-The dataset is delivered alongside the code in the public [GitHub data directory](https://github.com/wizounovziki/agent-harness-assessment/tree/main/data), following the user's selected submission method. Use **Code → Download ZIP** at the repository root to download code and data together. The release utility also writes a standalone `dist/mock-dataset-v1.0.0.zip` and checksums for local distribution. Publication verification is recorded in `docs/submission-checklist.md`.
+The dataset is delivered alongside the code in the public [GitHub data directory](https://github.com/wizounovziki/agent-harness-assessment/tree/main/data), following the user's selected submission method. Use **Code → Download ZIP** at the repository root to download code and data together. The release utility also writes a standalone `dist/mock-dataset-v1.1.0.zip` and checksums for local distribution. Publication verification is recorded in `docs/submission-checklist.md`.

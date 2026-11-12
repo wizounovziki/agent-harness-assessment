@@ -109,6 +109,12 @@ def create_app(
         app.state.manager.get(session_id, owner)
         return app.state.manager.store.incidents(session_id)
 
+    @app.get("/runs/{session_id}/changes")
+    async def changes(session_id: str, owner: Owner):
+        state = app.state.manager.get(session_id, owner)
+        control = app.state.manager.harness_for(state.scenario_id).registry.tools.operations
+        return {"changes": control.changes(session_id), "audit": control.audit(session_id)}
+
     @app.get("/runs/{session_id}/trace.jsonl")
     async def trace(session_id: str, owner: Owner):
         app.state.manager.get(session_id, owner)

@@ -1,5 +1,6 @@
 """Durable step events and redacted, flushed JSONL exports."""
 
+import hashlib
 import json
 import logging
 import os
@@ -53,6 +54,23 @@ class Tracer:
         action_result: tuple[str, dict[str, Any]] | None = None,
     ) -> None:
         event.event_id = uuid4().hex
+        event.trace_id = state.session_id
+        event.actor_id = state.owner_id
+        event.span_id = (
+            hashlib.sha256(event.action_id.encode()).hexdigest()[:16]
+            if event.action_id
+            else event.event_id[:16]
+        )
+        event.parent_span_id = state.session_id[:16]
+        if event.event_type == "run_created":
+            event.span_id = state.session_id[:16]
+            event.parent_span_id = None
+        pending = state.pending_tool_call
+        if pending and pending.action_id == event.action_id:
+            event.parameters_hash = pending.parameters_hash
+        references = (event.tool_input or {}) | (event.tool_output or {})
+        event.change_id = references.get("change_id")
+        event.snapshot_id = references.get("snapshot_id")
         event.sequence = len(state.traces) + 1
         # Persist and export the same sanitized event.
         event = StepTrace.model_validate(redact(event.model_dump()))

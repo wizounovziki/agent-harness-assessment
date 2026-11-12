@@ -40,7 +40,12 @@
         "enum": [
           "search_knowledge_base",
           "get_service_status",
-          "create_incident"
+          "create_incident",
+          "check_change_readiness",
+          "capture_change_snapshot",
+          "execute_service_change",
+          "verify_service_change",
+          "rollback_service_change"
         ]
       },
       "title": "Faults",
@@ -70,6 +75,16 @@
       },
       "title": "Service Overrides",
       "type": "object"
+    },
+    "late_health_failure": {
+      "default": false,
+      "title": "Late Health Failure",
+      "type": "boolean"
+    },
+    "rollback_unhealthy": {
+      "default": false,
+      "title": "Rollback Unhealthy",
+      "type": "boolean"
     }
   },
   "required": [

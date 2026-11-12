@@ -1,43 +1,41 @@
-# Operations Agent Harness: Architecture and Business Workflow
+# Operations Agent Harness: Business Architecture
 
-Date: 2026-11-12
+Updated: 2026-11-13 (Asia/Shanghai)
 
-## Layered Architecture
+The assistant supports incident response and controlled service changes. ReAct supplies evidence-driven decisions; the harness enforces authorization, contracts, approval, recovery prerequisites and execution limits.
 
-The assistant assesses service health, applies runbook guidance, proposes incident details, and reports findings supported by tool evidence. Its responsibilities are organized into five layers.
+## Layered architecture
 
-![Operations Agent Harness: Layered Architecture](./images/operations-layered-architecture-en-v2.png)
+![Layered business architecture](./images/operations-layered-architecture-en-v3.png)
 
-| Layer | Responsibility |
+| Layer | Modules and responsibilities |
 | --- | --- |
-| Access & Interaction | Accept goals, expose run status and history, and receive user approval or cancellation. |
-| Operations Business Logic | Assess services, diagnose with runbooks, plan incidents, and produce reports. Service catalogs, SEV policy, and completion criteria provide business context. |
-| Execution & Safety | Manage resumable state, validate tool contracts, enforce approval, recover from transient failures, and apply execution budgets. |
-| Model & Tool Adapters | Connect an official model SDK or scripted model to three registered mock tools. Incident creation requires approval for the exact action and parameters. |
-| Data & Evidence | Persist run state and incident results in SQLite, provide deterministic mock scenarios, and retain traces and test evidence. |
+| Access & interaction | CLI/HTTP goals, exact user decisions, run/change/audit queries |
+| Operations business logic | Service assessment, runbook diagnosis, incident planning, change planning, verification and recovery |
+| Execution & safety | Resource preflight, sealed snapshots, exact approval, revision checks, bounded execution and write reconciliation |
+| Model & tool adapters | DeepSeek/scripted model; three incident tools; five change-control tools |
+| Data & evidence | SQLite state/claims, versioned snapshots, linked audit hashes, mock environments and regression evidence |
 
-ReAct supports evidence gathering and decision updates within business logic. The architecture separates domain capabilities, execution policy, integrations, and persistent evidence.
+The architecture groups responsibilities in stacked layers. Agent-state snapshots support resuming execution; service snapshots support restoring workloads. Both are persisted independently.
 
-## Business Workflow
+## Business workflow
 
-![Operations Assistant: Business Workflow](./images/operations-business-workflow-en-v1.png)
+![Controlled operations workflow](./images/operations-business-workflow-en-v2.png)
 
-1. Receive a goal and load the relevant service context.
-2. Review available evidence. Query service status or runbooks when additional information is needed, validate the results, and update the assessment.
-3. Decide whether the evidence warrants an incident. Findings can also lead directly to a report.
-4. Draft and validate the title, description, and severity. Save the original parameters and wait for user approval.
-5. Create an approved incident with bounded retries and a stable idempotency key. Confirm the outcome before reporting an incident ID.
-6. Return a report supported by service observations and confirmed incident results. Record failed, stopped, or unresolved outcomes explicitly.
+Incident response gathers service/runbook evidence, proposes an incident, waits for approval and reports the confirmed result.
 
-Every model request and tool attempt checks the remaining budget. Retries consume the original budget, and approval waits retain their expiry. Tool activity, state changes, approvals, and stop reasons are linked through the run ID.
+Service changes follow **preflight → service snapshot → exact approval → environment/revision recheck → execution → health verification**. A blocked check prevents deployment. Immediate failure compensation uses the approved recovery scope. Later health failure requires separately approved rollback, a fresh capacity/version check and a snapshot of the state being reverted.
 
-## Implementation Approach
+Unverified changes and failed recovery require operator review. Restoring an earlier release is recorded as a failed deployment with confirmed recovery. Critical operations retain operator, approval, parameters, versions, snapshots and trace links.
 
-- Implemented with Python 3.12, FastAPI and Pydantic following the supplied framework specification. Model decisions, tool schemas, business policies, state transitions and event contracts are defined explicitly.
-- Build the control loop with a scripted model and deterministic mock tools, then exercise approval, failure, recovery, and budget paths.
-- Add SQLite persistence and HTTP endpoints, including approval recovery and repeat-request handling.
-- Connect one real model provider and deliver Postman examples, automated tests, representative traces, and the versioned mock dataset.
+## Implementation mapping
 
-## Image Generation Record
+- src/harness.py: bounded loop, approval and final evidence checks.
+- src/change_schemas.py: workload plans, resource, snapshot and recovery contracts.
+- src/operations.py: transactional mock preflight, changes, recovery and audit ledger.
+- src/tools.py: eight registered tools with validated boundaries and injected faults.
+- src/storage.py and src/tracer.py: ownership, approvals, correlated events and JSONL exports.
+- data/mock_deployments.json: trusted capacities, operator policy and immutable mock artifacts.
 
-The two English images were produced with the built-in image generation tool. Full prompts and the workflow copy edit are recorded in [English image prompts](./image-generation-prompts-en.md).
+Detailed contracts and production adapter requirements: [operations-safety.md](./operations-safety.md).
+Image prompts and versions: [image-generation-prompts-en.md](./image-generation-prompts-en.md).

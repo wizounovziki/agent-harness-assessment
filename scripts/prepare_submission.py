@@ -29,6 +29,11 @@ async def examples(root: Path) -> list[dict]:
         ("persistent_failure", "persistent_failure", None),
         ("loop", "loop", None),
         ("rejected", "incident", False),
+        ("deploy_success", "deploy_success", True),
+        ("deploy_capacity_blocked", "deploy_capacity_blocked", None),
+        ("deploy_rollback", "deploy_rollback", True),
+        ("deploy_late_failure", "deploy_late_failure", True),
+        ("deploy_rollback_failure", "deploy_rollback_failure", True),
     ]:
         settings = Settings(
             database_path=root / "runtime" / "examples" / f"{label}.sqlite3",
@@ -55,6 +60,7 @@ async def examples(root: Path) -> list[dict]:
                     "tool_attempts": state.tool_attempts,
                     "incident_count": len(manager.store.incidents(state.session_id)),
                     "final_answer": state.final_answer,
+                    "changes": harness.registry.tools.operations.changes(state.session_id),
                 }
             )
         finally:
@@ -71,10 +77,12 @@ def main():
     dataset = root / "data"
     files = [file for file in dataset.rglob("*") if file.is_file() and file.name != "manifest.json"]
     manifest = {
-        "version": "1.0.0",
+        "version": "1.1.0",
         "services": 3,
         "knowledge_documents": 4,
-        "scenarios": 13,
+        "scenarios": 21,
+        "deployment_environments": 2,
+        "registered_tools": 8,
         "license": "MIT",
         "sha256": {
             str(file.relative_to(dataset)).replace("\\", "/"): sha256(file)
@@ -142,6 +150,11 @@ def main():
         "clean_install": clean,
         "examples": records,
         "live_model": live,
+        "live_change_model": json.loads(
+            (root / "docs/live-change-results.json").read_text(encoding="utf-8")
+        )
+        if (root / "docs/live-change-results.json").exists()
+        else {"executed": False},
         "credential_scan": json.loads(
             (root / "docs/credential-scan.json").read_text(encoding="utf-8")
         )
@@ -155,12 +168,12 @@ def main():
     (root / "docs" / "validation-results.json").write_text(
         json.dumps(results, indent=2) + "\n", encoding="utf-8"
     )
-    data_zip = output / "mock-dataset-v1.0.0.zip"
+    data_zip = output / "mock-dataset-v1.1.0.zip"
     with zipfile.ZipFile(data_zip, "w", zipfile.ZIP_DEFLATED) as archive:
         for file in sorted(dataset.rglob("*")):
             if file.is_file():
-                archive.write(file, str(Path("mock-dataset-v1.0.0") / file.relative_to(dataset)))
-        archive.write(root / "LICENSE", "mock-dataset-v1.0.0/LICENSE")
+                archive.write(file, str(Path("mock-dataset-v1.1.0") / file.relative_to(dataset)))
+        archive.write(root / "LICENSE", "mock-dataset-v1.1.0/LICENSE")
     source_zip = output / "operations-agent-harness-v0.1.0.zip"
     source_files = [
         file
@@ -185,8 +198,8 @@ def main():
         )
     )
     selected_images = {
-        "operations-layered-architecture-en-v2.png",
-        "operations-business-workflow-en-v1.png",
+        "operations-layered-architecture-en-v3.png",
+        "operations-business-workflow-en-v2.png",
     }
     source_files = [
         file

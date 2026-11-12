@@ -1,0 +1,74 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "image_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Image Digest",
+      "type": "string"
+    },
+    "config_version": {
+      "pattern": "^[a-zA-Z0-9_-]{1,64}$",
+      "title": "Config Version",
+      "type": "string"
+    },
+    "replicas": {
+      "maximum": 20,
+      "minimum": 0,
+      "title": "Replicas",
+      "type": "integer"
+    },
+    "cpu_millis": {
+      "maximum": 4000,
+      "minimum": 50,
+      "title": "Cpu Millis",
+      "type": "integer"
+    },
+    "memory_mb": {
+      "maximum": 8192,
+      "minimum": 128,
+      "title": "Memory Mb",
+      "type": "integer"
+    },
+    "service_name": {
+      "pattern": "^[a-zA-Z0-9_-]{1,100}$",
+      "title": "Service Name",
+      "type": "string"
+    },
+    "environment": {
+      "enum": [
+        "staging",
+        "production"
+      ],
+      "title": "Environment",
+      "type": "string"
+    },
+    "operation": {
+      "enum": [
+        "deploy",
+        "update",
+        "decommission"
+      ],
+      "title": "Operation",
+      "type": "string"
+    },
+    "surge_replicas": {
+      "default": 1,
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Surge Replicas",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "image_digest",
+    "config_version",
+    "replicas",
+    "cpu_millis",
+    "memory_mb",
+    "service_name",
+    "environment",
+    "operation"
+  ],
+  "title": "ChangePlan",
+  "type": "object"
+}

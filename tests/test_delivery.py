@@ -14,7 +14,7 @@ def test_dataset_and_postman_are_valid_delivery_assets():
     dataset = Dataset(PROJECT_ROOT / "data")
     assert len(dataset.services) == 3
     assert len(dataset.documents) == 4
-    assert len(dataset.scenarios) == 13
+    assert len(dataset.scenarios) == 21
     collection = json.loads((PROJECT_ROOT / "postman_collection.json").read_text())
     names = [request["name"] for folder in collection["item"] for request in folder["item"]]
     assert len(names) == len(set(names))

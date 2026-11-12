@@ -1,62 +1,211 @@
 [
   {
     "scenario": "healthy",
-    "session_id": "2897bd4a6b47460b8080015fa73c255a",
+    "session_id": "209ac39158784491b46417819d1424dc",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 2,
     "tool_attempts": 1,
     "incident_count": 0,
-    "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+    "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed.",
+    "changes": []
   },
   {
     "scenario": "incident",
-    "session_id": "0098b2b340564fe98078f5523b6a481a",
+    "session_id": "036fc6101f4144f5bb5e4d599b910044",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 4,
     "tool_attempts": 3,
     "incident_count": 1,
-    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-BBCB7D0705."
+    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident created: INC-2956E33D65.",
+    "changes": []
   },
   {
     "scenario": "retry",
-    "session_id": "d8555ddaaa1048c7bda7c41b181736f5",
+    "session_id": "5937f5721b4146dcaff75dbee7eef648",
     "status": "COMPLETED",
     "stop_reason": "goal_completed",
     "steps": 2,
     "tool_attempts": 2,
     "incident_count": 0,
-    "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed."
+    "final_answer": "Auth is HEALTHY with latency 42 ms. No incident is needed.",
+    "changes": []
   },
   {
     "scenario": "persistent_failure",
-    "session_id": "3e1bda6cc6a04d8e9f326f664056df8d",
+    "session_id": "2d632dcccd5f49d58e747ab43fbdebcb",
     "status": "FAILED",
     "stop_reason": "completion_evidence_missing",
     "steps": 2,
     "tool_attempts": 3,
     "incident_count": 0,
-    "final_answer": "The task could not be completed with verified tool evidence. Current service status could not be verified."
+    "final_answer": "The task could not be completed with verified tool evidence. Current service status could not be verified.",
+    "changes": []
   },
   {
     "scenario": "loop",
-    "session_id": "1d6c4e1dca9d479d9d8472b8d0e9ed94",
+    "session_id": "574f6d8659c741b18000563132aefab0",
     "status": "LIMIT_EXCEEDED",
     "stop_reason": "step_limit",
     "steps": 8,
     "tool_attempts": 8,
     "incident_count": 0,
-    "final_answer": "Execution stopped: step_limit."
+    "final_answer": "Execution stopped: step_limit.",
+    "changes": []
   },
   {
     "scenario": "rejected",
-    "session_id": "61fac1a7008c4cb3a769a54ecf5132df",
+    "session_id": "2c0133c84ae046bcac045df25a038d11",
     "status": "COMPLETED",
     "stop_reason": "user_rejected",
     "steps": 4,
     "tool_attempts": 2,
     "incident_count": 0,
-    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident creation was cancelled by the user. No incident was created."
+    "final_answer": "Payment is DOWN. The payment runbook was consulted. Incident creation was cancelled by the user. No incident was created.",
+    "changes": []
+  },
+  {
+    "scenario": "deploy_success",
+    "session_id": "47f4eae501ce48e89fd79ee99c9fd706",
+    "status": "COMPLETED",
+    "stop_reason": "goal_completed",
+    "steps": 5,
+    "tool_attempts": 4,
+    "incident_count": 0,
+    "final_answer": "Deployment chg-pre-e3368a0b0e678a068b757f56 is verified healthy.",
+    "changes": [
+      {
+        "change_id": "chg-pre-e3368a0b0e678a068b757f56",
+        "snapshot_id": "snap-pre-e3368a0b0e678a068b757f56",
+        "plan": {
+          "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "config_version": "config-v2",
+          "replicas": 2,
+          "cpu_millis": 500,
+          "memory_mb": 512,
+          "service_name": "auth",
+          "environment": "staging",
+          "operation": "deploy",
+          "surge_replicas": 1
+        },
+        "status": "APPLIED",
+        "revision": 5,
+        "health": "HEALTHY",
+        "rollback_snapshot_id": null,
+        "verified": true,
+        "owner_id": "example-user"
+      }
+    ]
+  },
+  {
+    "scenario": "deploy_capacity_blocked",
+    "session_id": "6dbde63d6e3e43d2bffcb039d7d5f6cd",
+    "status": "FAILED",
+    "stop_reason": "completion_evidence_missing",
+    "steps": 2,
+    "tool_attempts": 1,
+    "incident_count": 0,
+    "final_answer": "No verified service change supports completion. Deployment blocked by resource preflight; no change applied.",
+    "changes": []
+  },
+  {
+    "scenario": "deploy_rollback",
+    "session_id": "5d7a41f37d8b44c99f3bf59861ec7cc1",
+    "status": "FAILED",
+    "stop_reason": "change_rolled_back",
+    "steps": 4,
+    "tool_attempts": 3,
+    "incident_count": 0,
+    "final_answer": "The change was rolled back to its saved snapshot. Change chg-pre-09a23ba98da91d6b7379cf18 failed health verification and was rolled back.",
+    "changes": [
+      {
+        "change_id": "chg-pre-09a23ba98da91d6b7379cf18",
+        "snapshot_id": "snap-pre-09a23ba98da91d6b7379cf18",
+        "plan": {
+          "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "config_version": "config-v2",
+          "replicas": 2,
+          "cpu_millis": 500,
+          "memory_mb": 512,
+          "service_name": "auth",
+          "environment": "staging",
+          "operation": "deploy",
+          "surge_replicas": 1
+        },
+        "status": "ROLLED_BACK",
+        "revision": 9,
+        "health": "HEALTHY",
+        "rollback_snapshot_id": "rollback-chg-pre-09a23ba98da91d6b7379cf18",
+        "verified": true,
+        "owner_id": "example-user"
+      }
+    ]
+  },
+  {
+    "scenario": "deploy_late_failure",
+    "session_id": "5612e4b25036451d9f17554009a21eee",
+    "status": "FAILED",
+    "stop_reason": "change_rolled_back",
+    "steps": 6,
+    "tool_attempts": 5,
+    "incident_count": 0,
+    "final_answer": "The change was rolled back to its saved snapshot. Change chg-pre-1531e8d4c15e5d29bc548172 was rolled back after the failed verification.",
+    "changes": [
+      {
+        "change_id": "chg-pre-1531e8d4c15e5d29bc548172",
+        "snapshot_id": "snap-pre-1531e8d4c15e5d29bc548172",
+        "plan": {
+          "image_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "config_version": "config-v2",
+          "replicas": 2,
+          "cpu_millis": 500,
+          "memory_mb": 512,
+          "service_name": "auth",
+          "environment": "staging",
+          "operation": "deploy",
+          "surge_replicas": 1
+        },
+        "status": "ROLLED_BACK",
+        "revision": 9,
+        "health": "HEALTHY",
+        "rollback_snapshot_id": "rollback-chg-pre-1531e8d4c15e5d29bc548172",
+        "verified": true,
+        "owner_id": "example-user"
+      }
+    ]
+  },
+  {
+    "scenario": "deploy_rollback_failure",
+    "session_id": "679ff5778f754bd1b4c00e44d1364461",
+    "status": "NEEDS_REVIEW",
+    "stop_reason": "change_recovery_requires_review",
+    "steps": 3,
+    "tool_attempts": 3,
+    "incident_count": 0,
+    "final_answer": "The service change requires operator recovery review.",
+    "changes": [
+      {
+        "change_id": "chg-pre-4cb138907d37516bda8f62ee",
+        "snapshot_id": "snap-pre-4cb138907d37516bda8f62ee",
+        "plan": {
+          "image_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "config_version": "config-v2",
+          "replicas": 2,
+          "cpu_millis": 500,
+          "memory_mb": 512,
+          "service_name": "auth",
+          "environment": "staging",
+          "operation": "deploy",
+          "surge_replicas": 1
+        },
+        "status": "NEEDS_REVIEW",
+        "revision": 9,
+        "health": "UNHEALTHY",
+        "rollback_snapshot_id": "rollback-chg-pre-4cb138907d37516bda8f62ee",
+        "verified": false,
+        "owner_id": "example-user"
+      }
+    ]
   }
 ]

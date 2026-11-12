@@ -20,8 +20,8 @@ def main():
                 assert not path.is_absolute() and ".." not in path.parts
                 assert not ({".venv", "node_modules", "runtime", ".git"} & set(path.parts))
                 assert path.name != ".env" and not path.name.endswith(".sqlite3")
-    with zipfile.ZipFile(output / "mock-dataset-v1.0.0.zip") as archive:
-        prefix = "mock-dataset-v1.0.0/"
+    with zipfile.ZipFile(output / "mock-dataset-v1.1.0.zip") as archive:
+        prefix = "mock-dataset-v1.1.0/"
         manifest = json.loads(archive.read(prefix + "manifest.json"))
         for name, expected in manifest["sha256"].items():
             assert hashlib.sha256(archive.read(prefix + name)).hexdigest() == expected, name
@@ -30,8 +30,8 @@ def main():
             PurePosixPath(name).name for name in archive.namelist() if name.endswith(".png")
         }
         assert image_names == {
-            "operations-layered-architecture-en-v2.png",
-            "operations-business-workflow-en-v1.png",
+            "operations-layered-architecture-en-v3.png",
+            "operations-business-workflow-en-v2.png",
         }
     print(
         json.dumps(

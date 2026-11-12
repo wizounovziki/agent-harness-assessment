@@ -25,7 +25,16 @@ class AgentStatus(StrEnum):
     NEEDS_REVIEW = "NEEDS_REVIEW"
 
 
-ToolName = Literal["search_knowledge_base", "get_service_status", "create_incident"]
+ToolName = Literal[
+    "search_knowledge_base",
+    "get_service_status",
+    "create_incident",
+    "check_change_readiness",
+    "capture_change_snapshot",
+    "execute_service_change",
+    "verify_service_change",
+    "rollback_service_change",
+]
 ApprovalStatus = Literal["APPROVED", "REJECTED", "PENDING", "NOT_REQUIRED", "EXPIRED"]
 
 
@@ -140,6 +149,8 @@ class ScenarioSpec(Contract):
     lookup_unavailable: bool = False
     inject_document: bool = False
     service_overrides: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    late_health_failure: bool = False
+    rollback_unhealthy: bool = False
 
     @field_validator("faults")
     @classmethod
@@ -164,6 +175,13 @@ class StepTrace(Contract):
     sequence: int = 0
     timestamp: str = Field(default_factory=utc_now)
     action_id: str | None = None
+    trace_id: str = ""
+    span_id: str = ""
+    parent_span_id: str | None = None
+    actor_id: str = ""
+    change_id: str | None = None
+    snapshot_id: str | None = None
+    parameters_hash: str | None = None
 
 
 class ChatMessage(Contract):
@@ -204,6 +222,7 @@ class AgentState(Contract):
     created_at: str = Field(default_factory=utc_now)
     updated_at: str = Field(default_factory=utc_now)
     incident_creation_rejected: bool = False
+    rejected_tools: list[str] = Field(default_factory=list)
     observations: list[dict[str, Any]] = Field(default_factory=list)
     revision: int = 0
 

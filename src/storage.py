@@ -5,6 +5,7 @@ import json
 import sqlite3
 import threading
 import time
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -59,6 +60,15 @@ class SQLiteStore:
                 PRIMARY KEY (session_id, tool_name)
             );
         """)
+
+    @contextmanager
+    def transaction(self):
+        """Share one atomic connection with the mock change-control adapter."""
+        try:
+            with self._lock, self._conn:
+                yield self._conn
+        except sqlite3.Error as exc:
+            raise PersistenceError("Could not persist change-control transaction") from exc
 
     def create(self, state: AgentState) -> None:
         try:
@@ -212,7 +222,9 @@ class SQLiteStore:
             pending.approval_status = target
             state.status = AgentStatus.RUNNING
             if decision == "reject":
-                state.incident_creation_rejected = True
+                if pending.tool_name == "create_incident":
+                    state.incident_creation_rejected = True
+                state.rejected_tools.append(pending.tool_name)
             self._snapshot(state)
             return state, True
 
@@ -228,7 +240,7 @@ class SQLiteStore:
             pending.approval_status = "EXPIRED"
             state.status = AgentStatus.STOPPED
             state.stop_reason = "approval_expired"
-            state.final_answer = "Approval expired. No incident was created."
+            state.final_answer = "Approval expired. The pending operation was not executed."
             self._snapshot(state)
 
     def next_tool_attempt(self, session_id: str, tool_name: str) -> int:

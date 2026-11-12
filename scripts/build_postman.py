@@ -192,6 +192,104 @@ def main():
             ],
         },
     ]
+
+    def change_query(name, assertions):
+        return request(
+            name,
+            "GET",
+            "/runs/{{run_id}}/changes",
+            tests=[
+                'pm.test("Change audit query succeeds", () => pm.response.to.have.status(200));',
+                "const changeAudit = pm.response.json();",
+                *[line.replace("data.", "changeAudit.") for line in assertions],
+            ],
+        )
+
+    folders.extend(
+        [
+            {
+                "name": "07 Safe deployment",
+                "item": [
+                    start("Create deployment run", "deploy_success"),
+                    poll("Poll deployment approval", "AWAITING_APPROVAL"),
+                    change_query(
+                        "Verify snapshot without deployment",
+                        [
+                            'pm.test("No deployment before approval", () => pm.expect(data.changes).to.have.lengthOf(0));',
+                            'pm.test("Snapshot already captured", () => pm.expect(data.audit.some(e => e.event === "snapshot_captured")).to.eql(true));',
+                        ],
+                    ),
+                    approve("Approve exact deployment", "approve"),
+                    poll("Poll verified deployment", "COMPLETED"),
+                    change_query(
+                        "Inspect deployed revision and audit",
+                        [
+                            'pm.test("One verified deployment", () => {pm.expect(data.changes).to.have.lengthOf(1); pm.expect(data.changes[0].verified).to.eql(true);});',
+                            'pm.test("Audit links present", () => pm.expect(data.audit.every(e => e.entry_hash && e.trace_id && e.actor_id)).to.eql(true));',
+                        ],
+                    ),
+                ],
+            },
+            {
+                "name": "08 Automatic failure rollback",
+                "item": [
+                    start("Create unhealthy deployment", "deploy_rollback"),
+                    poll("Poll compensation approval", "AWAITING_APPROVAL"),
+                    approve("Approve deployment with compensation", "approve"),
+                    poll(
+                        "Poll safely rolled back failure",
+                        "FAILED",
+                        [
+                            'pm.test("Deployment failure reported", () => pm.expect(state.stop_reason).to.eql("change_rolled_back"));'
+                        ],
+                    ),
+                    change_query(
+                        "Verify automatic rollback",
+                        [
+                            'pm.test("Restored saved revision", () => pm.expect(data.changes[0].status).to.eql("ROLLED_BACK"));'
+                        ],
+                    ),
+                ],
+            },
+            {
+                "name": "09 Capacity preflight",
+                "item": [
+                    start("Create constrained deployment", "deploy_capacity_blocked"),
+                    poll("Poll capacity refusal", "FAILED"),
+                    change_query(
+                        "Verify capacity blocks changes",
+                        [
+                            'pm.test("No capacity no deployment", () => pm.expect(data.changes).to.have.lengthOf(0));',
+                            'pm.test("CPU check blocks", () => pm.expect(data.audit[0].result.checks.cpu_capacity).to.eql(false));',
+                        ],
+                    ),
+                ],
+            },
+            {
+                "name": "10 Later health failure",
+                "item": [
+                    start("Create later failure deployment", "deploy_late_failure"),
+                    poll("Poll initial release approval", "AWAITING_APPROVAL"),
+                    approve("Approve initial release", "approve"),
+                    poll("Poll separate rollback approval", "AWAITING_APPROVAL"),
+                    change_query(
+                        "Inspect unhealthy release before rollback",
+                        [
+                            'pm.test("Rollback awaits a separate decision", () => pm.expect(data.changes[0].status).to.eql("UNHEALTHY"));'
+                        ],
+                    ),
+                    approve("Approve exact rollback target", "approve"),
+                    poll("Poll later failure recovery", "FAILED"),
+                    change_query(
+                        "Verify rollback safety snapshot",
+                        [
+                            'pm.test("Rollback captured current state", () => pm.expect(data.changes[0].rollback_snapshot_id).to.be.a("string"));'
+                        ],
+                    ),
+                ],
+            },
+        ]
+    )
     collection = {
         "info": {
             "name": "Operations Agent Harness",

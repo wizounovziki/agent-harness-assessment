@@ -4,6 +4,7 @@ import json
 from copy import deepcopy
 from pathlib import Path
 
+from src.change_schemas import ChangeOutput, ChangePlan, ReadinessOutput, SnapshotOutput
 from src.schemas import LLMAction, ScenarioSpec, SearchKBOutput, ServiceStatusOutput
 
 
@@ -12,7 +13,7 @@ def call(name: str, **args):
         "get_service_status": "Check the current service state before choosing the next action.",
         "search_knowledge_base": "Retrieve runbook guidance for the observed service issue.",
         "create_incident": "Submit an incident draft based on service and runbook evidence.",
-    }[name]
+    }.get(name, "Evaluate the change-control evidence and follow the approved operation policy.")
     return {
         "thought": summary,
         "action_type": "CALL_TOOL",
@@ -140,15 +141,120 @@ def build() -> dict:
     return scenarios
 
 
+def change_scenarios():
+    plan = dict(
+        service_name="auth",
+        environment="staging",
+        operation="deploy",
+        image_digest="sha256:" + "2" * 64,
+        config_version="config-v2",
+        replicas=2,
+        cpu_millis=500,
+        memory_mb=512,
+        surge_replicas=1,
+    )
+
+    def sequence(target, *, compensate=True):
+        return [
+            call("check_change_readiness", plan=target),
+            call("capture_change_snapshot", preflight_id="{{preflight_id}}"),
+            call(
+                "execute_service_change",
+                plan=target,
+                preflight_id="{{preflight_id}}",
+                snapshot_id="{{snapshot_id}}",
+                rollback_on_failure=compensate,
+            ),
+        ]
+
+    verify = call("verify_service_change", change_id="{{change_id}}")
+    good = sequence(plan) + [verify, final("Deployment {{change_id}} is verified healthy.")]
+    broken = plan | {"image_digest": "sha256:" + "3" * 64}
+    offline = plan | {"operation": "decommission", "replicas": 0, "surge_replicas": 0}
+    constrained = plan | {"environment": "production", "cpu_millis": 1000}
+    return {
+        "deploy_success": {
+            "objective": "Deploy auth in staging, verify health and report the change ID.",
+            "description": "Preflight -> sealed snapshot -> approval -> deploy -> verify.",
+            "responses": good,
+        },
+        "deploy_capacity_blocked": {
+            "objective": "Deploy auth in production if capacity permits.",
+            "description": "Insufficient rollout capacity blocks deployment.",
+            "responses": [
+                call("check_change_readiness", plan=constrained),
+                final("Deployment blocked by resource preflight; no change applied."),
+            ],
+        },
+        "deploy_rollback": {
+            "objective": "Deploy auth in staging with rollback on failed health checks.",
+            "description": "Immediate unhealthy rollout is restored under approved compensation scope.",
+            "responses": sequence(broken)
+            + [final("Change {{change_id}} failed health verification and was rolled back.")],
+        },
+        "deploy_late_failure": {
+            "objective": "Deploy auth, verify health, and roll back if a later check fails.",
+            "description": "Later failure requires separate rollback approval and a new safety snapshot.",
+            "responses": sequence(plan)
+            + [
+                verify,
+                call(
+                    "rollback_service_change",
+                    change_id="{{change_id}}",
+                    reason="Post-deployment health verification failed.",
+                    snapshot_id="{{snapshot_id}}",
+                    expected_revision="{{revision}}",
+                    service_name="auth",
+                    environment="staging",
+                    restore="{{snapshot_manifest}}",
+                ),
+                final("Change {{change_id}} was rolled back after the failed verification."),
+            ],
+            "late_health_failure": True,
+        },
+        "deploy_rollback_failure": {
+            "objective": "Deploy auth with recovery if health checks fail.",
+            "description": "Unhealthy rollback halts in NEEDS_REVIEW.",
+            "responses": sequence(broken),
+            "rollback_unhealthy": True,
+        },
+        "decommission": {
+            "objective": "Decommission auth in staging and verify it is offline.",
+            "description": "Snapshot and approval protect service removal.",
+            "responses": sequence(offline)
+            + [verify, final("Change {{change_id}} decommissioned auth; zero replicas verified.")],
+        },
+        "deploy_response_loss": {
+            "objective": "Deploy auth and verify its health.",
+            "description": "Reconcile a committed deployment after response loss.",
+            "responses": good,
+            "faults": {"execute_service_change": ["commit_then_timeout"]},
+        },
+        "deploy_unknown_write": {
+            "objective": "Deploy auth and verify its health.",
+            "description": "Lost deployment result with unavailable reconciliation requires review.",
+            "responses": good,
+            "faults": {"execute_service_change": ["commit_then_timeout"]},
+            "lookup_unavailable": True,
+        },
+    }
+
+
 def main():
     root = Path(__file__).resolve().parent.parent / "data"
     (root / "schemas").mkdir(exist_ok=True)
-    (root / "scenarios.json").write_text(json.dumps(build(), indent=2) + "\n", encoding="utf-8")
+    (root / "scenarios.json").write_text(
+        json.dumps(build() | change_scenarios(), indent=2) + "\n", encoding="utf-8"
+    )
     for name, model in {
         "model_action": LLMAction,
         "knowledge_result": SearchKBOutput,
         "service_status": ServiceStatusOutput,
         "scenario": ScenarioSpec,
+        "change_plan": ChangePlan,
+        "readiness": ReadinessOutput,
+        "snapshot": SnapshotOutput,
+        "change_result": ChangeOutput,
     }.items():
         (root / "schemas" / f"{name}.schema.json").write_text(
             json.dumps(model.model_json_schema(), indent=2) + "\n", encoding="utf-8"

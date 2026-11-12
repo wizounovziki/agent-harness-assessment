@@ -225,6 +225,48 @@
         }
       }
     },
+    "/runs/{session_id}/changes": {
+      "get": {
+        "summary": "Changes",
+        "operationId": "changes_runs__session_id__changes_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/runs/{session_id}/trace.jsonl": {
       "get": {
         "summary": "Trace",
@@ -509,6 +551,13 @@
             "title": "Incident Creation Rejected",
             "default": false
           },
+          "rejected_tools": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Rejected Tools"
+          },
           "observations": {
             "items": {
               "additionalProperties": true,
@@ -702,7 +751,12 @@
             "enum": [
               "search_knowledge_base",
               "get_service_status",
-              "create_incident"
+              "create_incident",
+              "check_change_readiness",
+              "capture_change_snapshot",
+              "execute_service_change",
+              "verify_service_change",
+              "rollback_service_change"
             ],
             "title": "Tool Name"
           },
@@ -901,6 +955,65 @@
               }
             ],
             "title": "Action Id"
+          },
+          "trace_id": {
+            "type": "string",
+            "title": "Trace Id",
+            "default": ""
+          },
+          "span_id": {
+            "type": "string",
+            "title": "Span Id",
+            "default": ""
+          },
+          "parent_span_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Span Id"
+          },
+          "actor_id": {
+            "type": "string",
+            "title": "Actor Id",
+            "default": ""
+          },
+          "change_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Id"
+          },
+          "snapshot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Snapshot Id"
+          },
+          "parameters_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parameters Hash"
           }
         },
         "additionalProperties": false,

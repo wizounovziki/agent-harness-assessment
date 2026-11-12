@@ -3,15 +3,15 @@
 ## Local deliverables
 
 - [x] Runnable Python CLI and FastAPI service.
-- [x] Three validated mock tools and deterministic model provider.
+- [x] Eight validated mock tools and deterministic model provider.
 - [x] Real official SDK adapter with automatic SDK retries disabled.
 - [x] Approval, restart recovery, idempotency, execution budgets and traces.
 - [x] Automated success, failure, approval, API and limit tests.
 - [x] English implementation report, architecture and workflow images.
 - [x] README, dependency lock, environment template and Postman collection.
 - [x] Final release archives and checksum verification.
-- [x] Clean installation from the source archive: 61 tests passed.
-- [x] Actual Postman collection run: 27 requests and 46 assertions passed.
+- [x] Clean installation from the source archive: 96 tests passed.
+- [x] Actual Postman collection run: 49 requests and 86 assertions passed.
 
 ## Live model verification
 
@@ -31,10 +31,21 @@ Evidence: [live model results](./live-model-results.json), [API collection](./ap
 - [x] Dataset submission method selected: include the small dataset under `data/` in the same repository.
 - [x] Publish the complete project to `main`.
 - [x] Verify repository and dataset access without authentication: twelve raw files and the complete source ZIP downloaded successfully.
-- [x] Install from the public source download and run all 61 tests successfully.
+- [x] Install from the public source download and run all 96 tests successfully.
 
 Publication state and public URLs are recorded in `publication.json` and `validation-results.json`.
 
 Repository: https://github.com/wizounovziki/agent-harness-assessment
 
 Dataset: https://github.com/wizounovziki/agent-harness-assessment/tree/main/data
+
+## Controlled service changes / 受控服务变更
+
+- [x] Resource/environment/permission preflight and write-time rechecks.
+- [x] Sealed service snapshots and exact-target approved rollback.
+- [x] Initial failure compensation, later rollback approval, and NEEDS_REVIEW for failed recovery.
+- [x] Trace/span/actor/version/approval links and transactional audit hash chain.
+- [x] Four additional live deepseek-flash workflows passed (18 requests, 60,712 tokens).
+- [x] Updated high-level concept, layered architecture, workflow and implementation report.
+
+See [operations-safety.md](./operations-safety.md) and [live-change-results.json](./live-change-results.json).

@@ -22,7 +22,12 @@
           "enum": [
             "search_knowledge_base",
             "get_service_status",
-            "create_incident"
+            "create_incident",
+            "check_change_readiness",
+            "capture_change_snapshot",
+            "execute_service_change",
+            "verify_service_change",
+            "rollback_service_change"
           ],
           "type": "string"
         },

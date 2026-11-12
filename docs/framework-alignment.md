@@ -18,3 +18,11 @@ The user supplied `agent_harness_ai.md` as the implementation reference. Its tec
 | Six core deterministic scenarios | Covered in `test_happy_path.py`, `test_resilience.py`, and `test_safety.py`; API and SDK contract tests extend them. |
 
 SQLite persistence, exact-parameter approval binding, authenticated ownership, optimistic revision checks and stable write keys complete the earlier design's recovery and side-effect requirements.
+
+## Operations safety extension
+
+The original three mock tools remain available. Five added tools cover resource/environment preflight, sealed service snapshots, approved deployment/update/decommission, health verification and separately approved rollback. The user requested these business controls after the initial delivery.
+
+The approval callback now accepts the validated contract of the pending critical operation. Model decisions still contain one action per turn. All critical write tools reuse parameter binding, expiry, persistent approval, bounded retries and reconciliation. StepTrace adds trace/span/actor/parameter/snapshot/change links. New deployment tables persist independently from resumable run snapshots.
+
+The architecture, workflow, concept design and report describe the added controls. Detailed requirements and boundaries are in [operations-safety.md](./operations-safety.md).

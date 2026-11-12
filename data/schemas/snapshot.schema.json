@@ -1,0 +1,100 @@
+{
+  "$defs": {
+    "Workload": {
+      "additionalProperties": false,
+      "properties": {
+        "image_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Image Digest",
+          "type": "string"
+        },
+        "config_version": {
+          "pattern": "^[a-zA-Z0-9_-]{1,64}$",
+          "title": "Config Version",
+          "type": "string"
+        },
+        "replicas": {
+          "maximum": 20,
+          "minimum": 0,
+          "title": "Replicas",
+          "type": "integer"
+        },
+        "cpu_millis": {
+          "maximum": 4000,
+          "minimum": 50,
+          "title": "Cpu Millis",
+          "type": "integer"
+        },
+        "memory_mb": {
+          "maximum": 8192,
+          "minimum": 128,
+          "title": "Memory Mb",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "image_digest",
+        "config_version",
+        "replicas",
+        "cpu_millis",
+        "memory_mb"
+      ],
+      "title": "Workload",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "snapshot_id": {
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "preflight_id": {
+      "title": "Preflight Id",
+      "type": "string"
+    },
+    "service_name": {
+      "title": "Service Name",
+      "type": "string"
+    },
+    "environment": {
+      "title": "Environment",
+      "type": "string"
+    },
+    "manifest": {
+      "$ref": "#/$defs/Workload"
+    },
+    "configuration": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Configuration",
+      "type": "object"
+    },
+    "checksum": {
+      "title": "Checksum",
+      "type": "string"
+    },
+    "source_revision": {
+      "title": "Source Revision",
+      "type": "integer"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "snapshot_id",
+    "preflight_id",
+    "service_name",
+    "environment",
+    "manifest",
+    "configuration",
+    "checksum",
+    "source_revision",
+    "created_at"
+  ],
+  "title": "SnapshotOutput",
+  "type": "object"
+}
